@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'home.dart';
+import 'LoginPage.dart';
 import 'package:lottie/lottie.dart';
 
 class IntroPage extends StatefulWidget {
@@ -31,7 +31,7 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
           (value) => Future.delayed(const Duration(seconds: 1)).then(
             (value) => _lottieAnimation.forward().then(
                   (value) => Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => LoginPage()),
                       (route) => false),
                 ),
           ),
