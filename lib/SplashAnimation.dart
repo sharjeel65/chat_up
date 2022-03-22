@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'LoginPage.dart';
 import 'package:lottie/lottie.dart';
-
 class IntroPage extends StatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
 
@@ -16,9 +15,10 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
   var expanded = false;
   final double _bigFontSize = kIsWeb ? 234 : 178; //if compiles on web size is 234 else 178
   final transitionDuration = const Duration(seconds: 1);
-
   @override
+
   void initState() {
+
     _lottieAnimation = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),

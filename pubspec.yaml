@@ -38,6 +38,14 @@ dependencies:
   flutter_native_splash: ^2.1.1
   google_fonts: ^2.3.1
   lottie: ^1.2.2
+  firebase_core: ^1.12.0
+  responsive_framework: ^0.1.7
+  firebase_analytics: ^9.1.0
+  firebase_auth: ^3.3.7
+  firebase_dynamic_links: ^4.0.6
+  cloud_firestore: ^3.1.8
+  twitter_login: ^4.0.1
+  google_sign_in: ^5.2.3
 flutter_native_splash:
     background_image: "assets/images/gradient.png"
     image: assets/images/chatupc.png

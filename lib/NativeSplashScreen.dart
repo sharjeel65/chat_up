@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart'; //splash screen import
-import 'intro.dart';
+import 'SplashAnimation.dart';
+import 'package:firebase_core/firebase_core.dart';
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -29,6 +30,9 @@ class _AppState extends State<App> {
 
     await Future.delayed(const Duration(seconds: 1));
     print('ready....');
+    await Firebase.initializeApp().whenComplete(() {
+      print("completed");
+    });
     FlutterNativeSplash.remove();
   }
   @override
