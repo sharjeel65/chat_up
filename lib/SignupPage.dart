@@ -1,8 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'UserHome.dart';
 import 'Validator.dart';
 import 'Auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'CountryCodeLists.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -17,6 +21,7 @@ class _SignupPageState extends State<SignupPage> {
         .push(MaterialPageRoute(builder: (context) => SignupPage()));
   }
 
+  String dropdownvalue = 'List of Countries';
   final _nicknameController = TextEditingController();
   final _numberController = TextEditingController();
   final _emailController = TextEditingController();
@@ -29,6 +34,7 @@ class _SignupPageState extends State<SignupPage> {
   final _focusConfPassword = FocusNode();
   final _registerFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
+  var list = CountryCodeList.Codes;
 
   @override
   Widget build(BuildContext context) {
@@ -87,168 +93,282 @@ class _SignupPageState extends State<SignupPage> {
                       child: Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                            padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(6)),
-                            height: 40,
                             width: 245,
-                            child: TextFormField(
-                              validator: (value) => Validator.validateName(
-                                name: value,
-                              ),
-                              focusNode: _focusName,
-                              controller: _nicknameController,
-                              textDirection: TextDirection.ltr,
-                              keyboardType: TextInputType.text,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(8),
-                                hintText: 'Enter nickname',
-                                hintStyle: TextStyle(
-                                  color: Color(0xFFF338BFF),
-                                  fontSize: 14,
+                            height: 60,
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  height: 40,
+                                  width: 245,
                                 ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
+                                TextFormField(
+                                  validator: (value) => Validator.validateName(
+                                    name: value,
+                                  ),
+                                  focusNode: _focusName,
+                                  controller: _nicknameController,
+                                  textDirection: TextDirection.ltr,
+                                  keyboardType: TextInputType.text,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(8, 8, 8, 8),
+                                    errorStyle: TextStyle(height: 1),
+                                    hintText: 'Enter nickname',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFFF338BFF),
+                                      fontSize: 14,
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 3, 0, 15),
+                                padding:
+                                    EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 0.1),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                height: 40,
+                                width: 70,
+                                child: DropdownSearch<String>(
+                                    autoValidateMode: AutovalidateMode.always,
+                                    mode: Mode.BOTTOM_SHEET,
+                                    showSearchBox: true,
+                                    showSelectedItems: false,
+                                    items: CountryCodeList.Codes,
+                                    dropdownButtonBuilder: (_) => Container(
+                                          /*
+                                      decoration: BoxDecoration(
+                                        color: Colors.lightGreenAccent,
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                      width: 40,
+                                          height: 40,
+                                          child: const Icon(
+                                            Icons.arrow_drop_down,
+                                            size: 24,
+
+                                          ),
+                                          */
+                                          color: Colors.black,
+                                        ),
+                                    dropdownSearchBaseStyle:
+                                        TextStyle(fontSize: 10),
+                                    popupItemDisabled: (String s) =>
+                                        s.startsWith('I'),
+                                    onChanged: print,
+                                    selectedItem: CountryCodeList.Codes[0]),
                               ),
+                              Container(
+                                height: 62,
+                                width: 170,
+                                padding: EdgeInsets.fromLTRB(5, 1, 0, 0),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      height: 40,
+                                      width: 170,
+                                    ),
+                                    TextFormField(
+                                      focusNode: _focusNumber,
+                                      validator: (value) =>
+                                          Validator.validateNumber(
+                                        number: value,
+                                      ),
+                                      controller: _numberController,
+                                      keyboardType: TextInputType.number,
+                                      textDirection: TextDirection.ltr,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.fromLTRB(8, 8, 8, 8),
+                                        errorStyle: TextStyle(height: 1,
+                                        fontSize: 12),
+                                        border: InputBorder.none,
+                                        hintMaxLines: 2,
+                                        hintText: 'Enter number',
+                                        hintStyle: TextStyle(
+                                          color: Color(0xFFF338BFF),
+                                          fontSize: 14,
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            width: 245,
+                            height: 60,
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  height: 40,
+                                  width: 245,
+
+                                ),
+                                TextFormField(
+                                  focusNode: _focusEmail,
+                                  validator: (value) => Validator.validateEmail(
+                                    email: value,
+                                  ),
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textDirection: TextDirection.ltr,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.all(8),
+                                    hintText: 'Enter email',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFFF338BFF),
+                                      fontSize: 14,
+                                    ),
+                                    errorStyle: TextStyle(
+                                      height: 1,
+                                      fontSize: 12,
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                            padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(6)),
-                            height: 40,
                             width: 245,
-                            child: TextFormField(
-                              focusNode: _focusNumber,
-                              validator: (value) => Validator.validateNumber(
-                                number: value,
-                              ),
-                              controller: _numberController,
-                              keyboardType: TextInputType.number,
-                              textDirection: TextDirection.ltr,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(4),
-                                hintMaxLines: 2,
-                                hintText:
-                                    'Enter number with country code e.g 923xxxxxxxxxxx',
-                                hintStyle: TextStyle(
-                                  color: Color(0xFFF338BFF),
-                                  fontSize: 14,
+                            height: 60,
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  height: 40,
+                                  width: 245,
                                 ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
+                                TextFormField(
+                                  focusNode: _focusPassword,
+                                  validator: (value) => Validator.validatePassword(
+                                    password: value,
+                                  ),
+                                  controller: _passwordController,
+                                  obscureText: true,
+                                  keyboardType: TextInputType.text,
+                                  textDirection: TextDirection.ltr,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.all(8),
+                                    hintText: 'Enter Password',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFFF338BFF),
+                                      fontSize: 14,
+                                    ),
+                                    errorStyle: TextStyle(
+                                      height: 1,
+                                      fontSize: 12,
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                            padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(6)),
-                            height: 40,
                             width: 245,
-                            child: TextFormField(
-                              focusNode: _focusEmail,
-                              validator: (value) => Validator.validateEmail(
-                                email: value,
-                              ),
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              textDirection: TextDirection.ltr,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(8),
-                                hintText: 'Enter email',
-                                hintStyle: TextStyle(
-                                  color: Color(0xFFF338BFF),
-                                  fontSize: 14,
+                            height: 60,
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  height: 40,
+                                  width: 245,
+
                                 ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
+                                TextFormField(
+                                  focusNode: _focusConfPassword,
+                                  validator: (value) =>
+                                      Validator.ValidateConfPassword(
+                                        password: _passwordController.text,
+                                        Confpassword: value,
+                                      ),
+                                  controller: _conPasswordController,
+                                  obscureText: true,
+                                  keyboardType: TextInputType.text,
+                                  textDirection: TextDirection.ltr,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.all(8),
+                                    hintText: 'Confirm Password',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFFF338BFF),
+                                      fontSize: 14,
+                                    ),
+                                    errorStyle: TextStyle(
+                                      fontSize: 12,
+                                      height: 1,
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                            padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(6)),
-                            height: 40,
-                            width: 245,
-                            child: TextFormField(
-                              focusNode: _focusPassword,
-                              validator: (value) => Validator.validatePassword(
-                                password: value,
-                              ),
-                              controller: _passwordController,
-                              obscureText: true,
-                              keyboardType: TextInputType.text,
-                              textDirection: TextDirection.ltr,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(8),
-                                hintText: 'Enter Password',
-                                hintStyle: TextStyle(
-                                  color: Color(0xFFF338BFF),
-                                  fontSize: 14,
-                                ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                            padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(6)),
-                            height: 40,
-                            width: 245,
-                            child: TextFormField(
-                              focusNode: _focusConfPassword,
-                              validator: (value) => Validator.ValidateConfPassword(
-                                password: _passwordController.text,
-                                Confpassword: value,
-                              ),
-                              controller: _conPasswordController,
-                              obscureText: true,
-                              keyboardType: TextInputType.text,
-                              textDirection: TextDirection.ltr,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(8),
-                                hintText: 'Confirm Password',
-                                hintStyle: TextStyle(
-                                  color: Color(0xFFF338BFF),
-                                  fontSize: 14,
-                                ),
-                                errorBorder: UnderlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
+                              ],
                             ),
                           ),
                           Container(
@@ -272,10 +392,9 @@ class _SignupPageState extends State<SignupPage> {
                                   _isProcessing = true;
                                 });
 
-                                if (_registerFormKey.currentState!
-                                    .validate()) {
-                                  User? user = await FireAuth
-                                      .registerUsingEmailPassword(
+                                if (_registerFormKey.currentState!.validate()) {
+                                  User? user =
+                                      await FireAuth.registerUsingEmailPassword(
                                     name: _nicknameController.text,
                                     number: _numberController.text,
                                     email: _emailController.text,
@@ -288,13 +407,11 @@ class _SignupPageState extends State<SignupPage> {
                                   });
 
                                   if (user != null) {
-                                    Navigator.of(context)
-                                        .push(
+                                    Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             UserHome(user: user),
                                       ),
-
                                     );
                                   }
                                 }
