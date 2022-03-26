@@ -399,7 +399,6 @@ class _SignupPageState extends State<SignupPage> {
                                     number: _numberController.text,
                                     email: _emailController.text,
                                     password: _passwordController.text,
-                                    ConPassword: _conPasswordController.text,
                                   );
 
                                   setState(() {
@@ -414,7 +413,20 @@ class _SignupPageState extends State<SignupPage> {
                                       ),
                                     );
                                   }
+                                  else if(user==null){
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Container(
+                                            child: Text(errormessage),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
                                 }
+
                               },
                               child: Center(
                                 child: Text(

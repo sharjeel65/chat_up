@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
+String errormessage = '';
 class FireAuth {
   // For registering a new user
   static Future<User?> registerUsingEmailPassword({
@@ -7,8 +7,6 @@ class FireAuth {
     required String email,
     required String number,
     required String password,
-    required String ConPassword,
-
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -18,24 +16,41 @@ class FireAuth {
         email: email,
         password: password,
       );
-
       user = userCredential.user;
       await user!.updateProfile(displayName: name);
       await user.reload();
       user = auth.currentUser;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+      switch (e.code) {
+        case "invalid email":
+          {
+            errormessage = 'Your email appears to be malformed';
+            print(errormessage);
+          }
+          break;
+        case "weak-password":
+          {
+            errormessage = 'Your password must be greater than 6 characters';
+            print(errormessage);
+          }
+          break;
+        case "email-already-in-use":
+          {
+            errormessage = 'User is already registered';
+            print(errormessage);
+          }
+          break;
+        default:
+          {
+            errormessage = "Unidentified error happened";
+            print(e);
+          }
       }
     } catch (e) {
       print(e);
     }
-
     return user;
   }
-
   // For signing in an user (have already registered)
   static Future<User?> signInUsingEmailPassword({
     required String email,
@@ -43,7 +58,6 @@ class FireAuth {
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
-
     try {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
         email: email,
@@ -51,13 +65,56 @@ class FireAuth {
       );
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided.');
+      switch (e.code) {
+        case "invalid-email":
+          {
+            errormessage = 'Your email address appears to be malformed.';
+            print(errormessage);
+          }
+          break;
+        case "wrong-password":
+          {
+            errormessage = 'Your password or email is incorrect.';
+            print(errormessage);
+          }
+          break;
+        case "user-not-found":
+          {
+            errormessage = 'Your password or email is incorrect.';
+            print(errormessage);
+          }
+          break;
+        case "user-disabled":
+          {
+            errormessage = 'User with this email has been disabled.';
+            print(errormessage);
+          }
+          break;
+        case "too-many-requests":
+          {
+            errormessage = 'Too many requests. Try again later.';
+            print(errormessage);
+          }
+          break;
+        case "operation-not-allowed":
+          {
+            errormessage = 'Signing in with Email and Password is not enabled.';
+            print(errormessage);
+          }
+          break;
+        case "unknown":
+          {
+            errormessage = 'Please enter Email and Password both';
+            print(errormessage);
+          }
+          break;
+        default:
+          {
+            errormessage = "An undefined Error happened.";
+            print(errormessage);
+          }
       }
     }
-
     return user;
   }
 
@@ -70,3 +127,7 @@ class FireAuth {
     return refreshedUser;
   }
 }
+class errors{
+String error(){
+  return errormessage;
+}}

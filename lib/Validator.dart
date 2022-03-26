@@ -1,3 +1,4 @@
+
 class Validator {
   static String? validateName({required String? name}) {
     if (name == null) {
@@ -39,7 +40,6 @@ class Validator {
     } else if (!emailRegExp.hasMatch(email)) {
       return 'Enter a correct email';
     }
-
     return null;
   }
 
