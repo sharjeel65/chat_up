@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "201503646001",
+    "firebase_url": "https://chatup-6a40e-default-rtdb.firebaseio.com",
     "project_id": "chatup-6a40e",
     "storage_bucket": "chatup-6a40e.appspot.com"
   },

@@ -47,6 +47,8 @@ dependencies:
   twitter_login: ^4.0.1
   google_sign_in: ^5.2.3
   dropdown_search: ^2.0.1
+  sms_autofill: ^2.2.0
+
 flutter_native_splash:
     background_image: "assets/images/gradient.png"
     image: assets/images/chatupc.png
@@ -78,10 +80,6 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/Animations/1.json
-    - assets/Animations/2.json
-    - assets/Animations/3.json
-    - assets/Animations/4.json
-    - assets/Animations/5.json
     - assets/images/profile.png
     - assets/images/facebook.png
     - assets/images/google.png

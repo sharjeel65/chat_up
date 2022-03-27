@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart'; //splash screen import
 import 'SplashAnimation.dart';
@@ -33,6 +34,7 @@ class _AppState extends State<App> {
     await Firebase.initializeApp().whenComplete(() {
       print("completed");
     });
+
     FlutterNativeSplash.remove();
   }
   @override

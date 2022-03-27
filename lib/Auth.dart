@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 String errormessage = '';
+
 class FireAuth {
   // For registering a new user
   static Future<User?> registerUsingEmailPassword({
@@ -9,6 +12,8 @@ class FireAuth {
     required String password,
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
     User? user;
 
     try {
@@ -17,9 +22,16 @@ class FireAuth {
         password: password,
       );
       user = userCredential.user;
-      await user!.updateProfile(displayName: name);
+      await user!.updateDisplayName(name);
       await user.reload();
       user = auth.currentUser;
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      users.add({
+        'email': email,
+        'nickname': name,
+        'number': number,
+        'Password': password,
+      });
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "invalid email":
@@ -36,7 +48,7 @@ class FireAuth {
           break;
         case "email-already-in-use":
           {
-            errormessage = 'User is already registered';
+            errormessage = 'Email is already registered';
             print(errormessage);
           }
           break;
@@ -51,6 +63,7 @@ class FireAuth {
     }
     return user;
   }
+
   // For signing in an user (have already registered)
   static Future<User?> signInUsingEmailPassword({
     required String email,
@@ -127,7 +140,9 @@ class FireAuth {
     return refreshedUser;
   }
 }
-class errors{
-String error(){
-  return errormessage;
-}}
+
+class errors {
+  String error() {
+    return errormessage;
+  }
+}

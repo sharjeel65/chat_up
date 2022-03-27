@@ -1,13 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'UserHome.dart';
 import 'Validator.dart';
 import 'Auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'CountryCodeLists.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
 
@@ -16,12 +11,10 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  void _navigatetoHomePage(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => SignupPage()));
-  }
-
+  ///////FUNCTIONS DECLARATION/////////////
   String dropdownvalue = 'List of Countries';
+
+  ////////VARIABLES DECLARATION//////////
   final _nicknameController = TextEditingController();
   final _numberController = TextEditingController();
   final _emailController = TextEditingController();
@@ -34,8 +27,8 @@ class _SignupPageState extends State<SignupPage> {
   final _focusConfPassword = FocusNode();
   final _registerFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
-  var list = CountryCodeList.Codes;
 
+  /////////////BUILD STARTED//////////////
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -76,6 +69,7 @@ class _SignupPageState extends State<SignupPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
+                    //////USER IMAGE AREA/////
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.transparent,
@@ -88,10 +82,12 @@ class _SignupPageState extends State<SignupPage> {
                       height: 83,
                       width: 101,
                     ),
+                    ///////FORM STARTED///////
                     Form(
                       key: _registerFormKey,
                       child: Column(
                         children: [
+                          ///////NICKNAME CONTAINER AND FORMFIELD///////
                           Container(
                             width: 245,
                             height: 60,
@@ -136,97 +132,56 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 3, 0, 15),
-                                padding:
-                                    EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 0.1),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(5),
+                          /////// NUMBER FIELD///////
+                          Container(
+                            width: 245,
+                            height: 60,
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  height: 40,
+                                  width: 245,
                                 ),
-                                height: 40,
-                                width: 70,
-                                child: DropdownSearch<String>(
-                                    autoValidateMode: AutovalidateMode.always,
-                                    mode: Mode.BOTTOM_SHEET,
-                                    showSearchBox: true,
-                                    showSelectedItems: false,
-                                    items: CountryCodeList.Codes,
-                                    dropdownButtonBuilder: (_) => Container(
-                                          /*
-                                      decoration: BoxDecoration(
-                                        color: Colors.lightGreenAccent,
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                      width: 40,
-                                          height: 40,
-                                          child: const Icon(
-                                            Icons.arrow_drop_down,
-                                            size: 24,
-
-                                          ),
-                                          */
-                                          color: Colors.black,
-                                        ),
-                                    dropdownSearchBaseStyle:
-                                        TextStyle(fontSize: 10),
-                                    popupItemDisabled: (String s) =>
-                                        s.startsWith('I'),
-                                    onChanged: print,
-                                    selectedItem: CountryCodeList.Codes[0]),
-                              ),
-                              Container(
-                                height: 62,
-                                width: 170,
-                                padding: EdgeInsets.fromLTRB(5, 1, 0, 0),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      height: 40,
-                                      width: 170,
+                                TextFormField(
+                                  focusNode: _focusNumber,
+                                  validator: (value) =>
+                                      Validator.validateNumber(
+                                    number: value,
+                                  ),
+                                  controller: _numberController,
+                                  keyboardType: TextInputType.number,
+                                  textDirection: TextDirection.ltr,
+                                  decoration: InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(8, 8, 8, 8),
+                                    errorStyle:
+                                        TextStyle(height: 1, fontSize: 12),
+                                    border: InputBorder.none,
+                                    hintMaxLines: 2,
+                                    hintText: 'Enter number',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFFF338BFF),
+                                      fontSize: 14,
                                     ),
-                                    TextFormField(
-                                      focusNode: _focusNumber,
-                                      validator: (value) =>
-                                          Validator.validateNumber(
-                                        number: value,
-                                      ),
-                                      controller: _numberController,
-                                      keyboardType: TextInputType.number,
-                                      textDirection: TextDirection.ltr,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            EdgeInsets.fromLTRB(8, 8, 8, 8),
-                                        errorStyle: TextStyle(height: 1,
-                                        fontSize: 12),
-                                        border: InputBorder.none,
-                                        hintMaxLines: 2,
-                                        hintText: 'Enter number',
-                                        hintStyle: TextStyle(
-                                          color: Color(0xFFF338BFF),
-                                          fontSize: 14,
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(6.0),
-                                          borderSide: BorderSide(
-                                            color: Colors.red,
-                                          ),
-                                        ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                          ///////EMAIL FORMFIELD///////
                           Container(
                             width: 245,
                             height: 60,
@@ -241,7 +196,6 @@ class _SignupPageState extends State<SignupPage> {
                                       borderRadius: BorderRadius.circular(6)),
                                   height: 40,
                                   width: 245,
-
                                 ),
                                 TextFormField(
                                   focusNode: _focusEmail,
@@ -274,6 +228,7 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
+                          ///////PASSWORD FORMFIELD///////
                           Container(
                             width: 245,
                             height: 60,
@@ -291,7 +246,8 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                                 TextFormField(
                                   focusNode: _focusPassword,
-                                  validator: (value) => Validator.validatePassword(
+                                  validator: (value) =>
+                                      Validator.validatePassword(
                                     password: value,
                                   ),
                                   controller: _passwordController,
@@ -321,6 +277,7 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
+                          ///////CONFIRM PASSWORD FORMFIELD//////
                           Container(
                             width: 245,
                             height: 60,
@@ -335,15 +292,14 @@ class _SignupPageState extends State<SignupPage> {
                                       borderRadius: BorderRadius.circular(6)),
                                   height: 40,
                                   width: 245,
-
                                 ),
                                 TextFormField(
                                   focusNode: _focusConfPassword,
                                   validator: (value) =>
                                       Validator.ValidateConfPassword(
-                                        password: _passwordController.text,
-                                        Confpassword: value,
-                                      ),
+                                    password: _passwordController.text,
+                                    Confpassword: value,
+                                  ),
                                   controller: _conPasswordController,
                                   obscureText: true,
                                   keyboardType: TextInputType.text,
@@ -352,17 +308,17 @@ class _SignupPageState extends State<SignupPage> {
                                     border: InputBorder.none,
                                     contentPadding: EdgeInsets.all(8),
                                     hintText: 'Confirm Password',
-                                    hintStyle: TextStyle(
+                                    hintStyle: const TextStyle(
                                       color: Color(0xFFF338BFF),
                                       fontSize: 14,
                                     ),
-                                    errorStyle: TextStyle(
+                                    errorStyle: const TextStyle(
                                       fontSize: 12,
                                       height: 1,
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(6.0),
-                                      borderSide: BorderSide(
+                                      borderSide: const BorderSide(
                                         color: Colors.red,
                                       ),
                                     ),
@@ -371,26 +327,36 @@ class _SignupPageState extends State<SignupPage> {
                               ],
                             ),
                           ),
+                          ///////SUBMIT BUTTON///////
                           Container(
                             margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
                             height: 35,
                             width: 245,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                gradient: LinearGradient(
-                                    stops: [0.18, 0.4, 0.8],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xFFF6256D8),
-                                      Color(0xFFFAAB3CE),
-                                      Color(0xFFF8564B4)
-                                    ])),
+                              borderRadius: BorderRadius.circular(6),
+                              gradient: const LinearGradient(
+                                stops: [0.18, 0.4, 0.8],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Color(0xFFF6256D8),
+                                  Color(0xFFFAAB3CE),
+                                  Color(0xFFF8564B4)
+                                ],
+                              ),
+                            ),
                             child: GestureDetector(
                               onTap: () async {
+
                                 setState(() {
-                                  _isProcessing = true;
+                                  print(_numberController.text);
                                 });
+
+                                setState(
+                                  () {
+                                    _isProcessing = true;
+                                  },
+                                );
 
                                 if (_registerFormKey.currentState!.validate()) {
                                   User? user =
@@ -400,10 +366,11 @@ class _SignupPageState extends State<SignupPage> {
                                     email: _emailController.text,
                                     password: _passwordController.text,
                                   );
-
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
+                                  setState(
+                                    () {
+                                      _isProcessing = false;
+                                    },
+                                  );
 
                                   if (user != null) {
                                     Navigator.of(context).push(
@@ -412,8 +379,7 @@ class _SignupPageState extends State<SignupPage> {
                                             UserHome(user: user),
                                       ),
                                     );
-                                  }
-                                  else if(user==null){
+                                  } else if (user == null) {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -426,25 +392,32 @@ class _SignupPageState extends State<SignupPage> {
                                     );
                                   }
                                 }
-
                               },
-                              child: Center(
-                                child: Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Times New Roman',
-                                  ),
-                                ),
-                              ),
+                              child: !_isProcessing
+                                  ? Center(
+                                      child: Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Times New Roman',
+                                        ),
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator()),
+                                    ),
                             ),
                           ),
                         ],
                       ),
                     ),
+                    ///////SIGNUP WITH TEXT AREA///////
                     Container(
                       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Or Sign Up with',
                           style: TextStyle(
@@ -454,6 +427,7 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                       ),
                     ),
+                    ///////SIGNUPWITH GOOGLE///////
                     Container(
                       height: 50,
                       width: 500,
@@ -468,7 +442,7 @@ class _SignupPageState extends State<SignupPage> {
                               height: 26,
                               width: 26,
                               margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage("assets/images/google.png"),
                                   fit: BoxFit.fill,
@@ -480,11 +454,12 @@ class _SignupPageState extends State<SignupPage> {
                             onTap: () {
                               //_navigatetosignup(context);
                             },
+                            ///////SIGNUP WITH TWITTER///////
                             child: Container(
                               height: 26,
                               width: 26,
                               margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   image:
                                       AssetImage("assets/images/twitter.png"),
@@ -497,11 +472,12 @@ class _SignupPageState extends State<SignupPage> {
                             onTap: () {
                               // _navigatetosignup(context);
                             },
+                            ///////SIGNUP WITH FACEBOOK///////
                             child: Container(
                               height: 26,
                               width: 26,
                               margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   image:
                                       AssetImage("assets/images/facebook.png"),

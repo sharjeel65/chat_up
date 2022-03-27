@@ -1,4 +1,3 @@
-
 class Validator {
   static String? validateName({required String? name}) {
     if (name == null) {
@@ -11,18 +10,18 @@ class Validator {
 
     return null;
   }
+
   static String? validateNumber({required String? number}) {
     if (number == null) {
       return null;
     }
 
-    RegExp emailRegExp = RegExp(
-        r"^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$");
+    RegExp NumberRegExp = RegExp(r"^[0-9]{6,14}$");
 
     if (number.isEmpty) {
       return 'Number can\'t be empty';
-    } else if (!emailRegExp.hasMatch(number)) {
-      return 'Enter a correct Number';
+    } else if (!NumberRegExp.hasMatch(number)) {
+      return 'Enter a correct Number, no symbols';
     }
     return null;
   }
@@ -32,8 +31,8 @@ class Validator {
       return null;
     }
 
-    RegExp emailRegExp = RegExp(
-        r"([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})");
+    RegExp emailRegExp =
+        RegExp(r"([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})");
 
     if (email.isEmpty) {
       return 'Email can\'t be empty';
@@ -56,16 +55,17 @@ class Validator {
 
     return null;
   }
-  static String? ValidateConfPassword({required String? Confpassword,required String? password}) {
+
+  static String? ValidateConfPassword(
+      {required String? Confpassword, required String? password}) {
     if (Confpassword == null) {
       return null;
     }
     if (Confpassword.isEmpty) {
       return 'Password can\'t be empty';
-    } else if (Confpassword!=password) {
+    } else if (Confpassword != password) {
       return 'Your Passwords are different';
     }
-
     return null;
   }
 }

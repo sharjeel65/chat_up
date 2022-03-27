@@ -234,7 +234,8 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                 }
                               },
-                              child: Center(
+                              child: !_isProcessing
+                                  ? Center(
                                 child: Text(
                                   'Submit',
                                   style: TextStyle(
@@ -242,6 +243,12 @@ class _LoginPageState extends State<LoginPage> {
                                     fontFamily: 'Times New Roman',
                                   ),
                                 ),
+                              )
+                                  : Center(
+                                child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator()),
                               ),
                             ),
                           ),
