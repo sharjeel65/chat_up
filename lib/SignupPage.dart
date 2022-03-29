@@ -3,6 +3,7 @@ import 'UserHome.dart';
 import 'Validator.dart';
 import 'Auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
 
@@ -12,9 +13,256 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   ///////FUNCTIONS DECLARATION/////////////
-  String dropdownvalue = 'List of Countries';
+  void showCustomDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: Duration(milliseconds: 700),
+      pageBuilder: (_, __, ___) {
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  stops: [
+                    0.1,
+                    0.72,
+                    0.86,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFb0b4e5),
+                    Color(0xFF202c77),
+                    Color(0xFF141468),
+                  ],
+                ),
+              ),
+              height: 400,
+              width: 300,
+              child: IntrinsicHeight(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Form(
+                      // key: _formKey,
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            width: 245,
+                            height: 60,
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  height: 40,
+                                  width: 245,
+                                ),
+                                TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  textDirection: TextDirection.ltr,
+                                  //controller: _emailTextController,
+                                  focusNode: _focusEmail,
+                                  validator: (value) => Validator.validateEmail(
+                                    email: value,
+                                  ),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(5),
+                                    hintText: 'Mobile Number',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFFF338BFF),
+                                      fontSize: 14,
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    errorStyle: TextStyle(
+                                      height: 1,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 245,
+                            height: 60,
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  height: 40,
+                                  width: 245,
+                                ),
+                                TextFormField(
+                                  // controller: _passwordTextController,
+                                  focusNode: _focusPassword,
+                                  validator: (value) =>
+                                      Validator.validatePassword(
+                                    password: value,
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  textDirection: TextDirection.ltr,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(5),
+                                    hintText: 'Verification Code',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xFFF338BFF),
+                                      fontSize: 14,
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    errorStyle: TextStyle(
+                                      height: 1,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: 35,
+                            width: 245,
+                            margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                gradient: LinearGradient(
+                                    stops: [0.18, 0.4, 0.8],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFF6256D8),
+                                      Color(0xFFFAAB3CE),
+                                      Color(0xFFF8564B4)
+                                    ])),
+                          ),
+                          Container(
+                            height: 35,
+                            width: 245,
+                            margin: EdgeInsets.only(top: 30),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                gradient: LinearGradient(
+                                    stops: [0.18, 0.4, 0.8],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFF6256D8),
+                                      Color(0xFFFAAB3CE),
+                                      Color(0xFFF8564B4)
+                                    ])),
+                            /*  child: GestureDetector(
+                              onTap: () async {
+                                _focusEmail.unfocus();
+                                _focusPassword.unfocus();
+
+                                if (_formKey.currentState!.validate()) {
+                                  setState(() {
+                                    _isProcessing = true;
+                                  });
+
+                                  User? user =
+                                  await FireAuth.signInUsingEmailPassword(
+                                    email: _emailTextController.text,
+                                    password: _passwordTextController.text,
+                                  );
+
+                                  setState(() {
+                                    _isProcessing = false;
+                                  });
+
+                                  if (user != null) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserHome(user: user),
+                                      ),
+                                    );
+                                  } else if (user == null) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Container(
+                                            child: Text(errormessage),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                }
+                              },
+                              child: !_isProcessing
+                                  ? Center(
+                                child: Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Times New Roman',
+                                  ),
+                                ),
+                              )
+                                  : Center(
+                                child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator()),
+                              ),
+                            ),*/
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        Tween<Offset> tween;
+        if (anim.status == AnimationStatus.reverse) {
+          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
+        } else {
+          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+        }
+
+        return SlideTransition(
+          position: tween.animate(anim),
+          child: FadeTransition(
+            opacity: anim,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
 
   ////////VARIABLES DECLARATION//////////
+  String dropdownvalue = 'List of Countries';
   final _nicknameController = TextEditingController();
   final _numberController = TextEditingController();
   final _emailController = TextEditingController();
@@ -347,11 +595,12 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                             child: GestureDetector(
                               onTap: () async {
+                                showCustomDialog(context);
 
                                 setState(() {
                                   print(_numberController.text);
                                 });
-
+/*
                                 setState(
                                   () {
                                     _isProcessing = true;
@@ -391,7 +640,7 @@ class _SignupPageState extends State<SignupPage> {
                                       },
                                     );
                                   }
-                                }
+                                }*/
                               },
                               child: !_isProcessing
                                   ? Center(

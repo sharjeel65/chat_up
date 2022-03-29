@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         image: DecorationImage(
-                          image: AssetImage("assets/images/profile.png"),
+                          image: AssetImage("assets/images/user.png"),
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -335,15 +335,6 @@ class _LoginPageState extends State<LoginPage> {
                         height: 35,
                         width: 245,
                         decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFFF56066E),
-                                spreadRadius: 1,
-                                blurRadius: 16,
-                                offset: Offset(
-                                    1.5, 4), // changes position of shadow
-                              ),
-                            ],
                             borderRadius: BorderRadius.circular(6),
                             gradient: LinearGradient(
                                 stops: [0.18, 0.4, 0.8],
