@@ -272,6 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: 500,
                       margin: EdgeInsets.fromLTRB(150, 0, 150, 0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
                             onTap: () {

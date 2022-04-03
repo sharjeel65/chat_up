@@ -3,7 +3,7 @@ import 'UserHome.dart';
 import 'Validator.dart';
 import 'Auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'dart:async';
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
 
@@ -13,11 +13,41 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   ///////FUNCTIONS DECLARATION/////////////
-  void showCustomDialog(BuildContext context) {
+  Future<void> verifyPhoneNumber(BuildContext context) async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '+' + phoneNumber,
+      timeout: const Duration(seconds: 15),
+      verificationCompleted: (AuthCredential authCredential) {
+        setState(() {
+          authStatus = "Your account is successfully verified";
+        });
+      },
+      verificationFailed: (FirebaseAuthException authException) {
+        setState(() {
+          authStatus = "Authentication failed";
+        });
+      },
+      codeSent: (String verId, [int? forceCodeResent]) {
+        verificationId = verId;
+        setState(() {
+          authStatus = "OTP has been successfully send";
+        });
+        showCustomDialog(context).then((value) {});
+      },
+      codeAutoRetrievalTimeout: (String verId) {
+        verificationId = verId;
+        setState(() {
+          authStatus = "TIMEOUT";
+        });
+      },
+    );
+  }
+
+  showCustomDialog(BuildContext context) {
     showGeneralDialog(
       context: context,
       barrierLabel: "Barrier",
-      barrierDismissible: true,
+      barrierDismissible: false,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 700),
       pageBuilder: (_, __, ___) {
@@ -69,10 +99,11 @@ class _SignupPageState extends State<SignupPage> {
                                 TextFormField(
                                   keyboardType: TextInputType.number,
                                   textDirection: TextDirection.ltr,
-                                  //controller: _emailTextController,
-                                  focusNode: _focusEmail,
-                                  validator: (value) => Validator.validateEmail(
-                                    email: value,
+                                  controller: _numberController,
+                                  focusNode: _focusnumberotp,
+                                  validator: (value) =>
+                                      Validator.validateNumber(
+                                    number: value,
                                   ),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(5),
@@ -92,6 +123,9 @@ class _SignupPageState extends State<SignupPage> {
                                     ),
                                     border: InputBorder.none,
                                   ),
+                                  onChanged: (value) {
+                                    phoneNumber = value;
+                                  },
                                 ),
                               ],
                             ),
@@ -112,12 +146,11 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 245,
                                 ),
                                 TextFormField(
-                                  // controller: _passwordTextController,
-                                  focusNode: _focusPassword,
-                                  validator: (value) =>
-                                      Validator.validatePassword(
-                                    password: value,
-                                  ),
+                                  onChanged: (value) {
+                                    otp = value;
+                                  },
+                                  controller: _otpController,
+                                  focusNode: _focusotp,
                                   keyboardType: TextInputType.number,
                                   textDirection: TextDirection.ltr,
                                   decoration: InputDecoration(
@@ -157,6 +190,18 @@ class _SignupPageState extends State<SignupPage> {
                                       Color(0xFFFAAB3CE),
                                       Color(0xFFF8564B4)
                                     ])),
+                            child: GestureDetector(
+                              onTap: () => {verifyPhoneNumber(context)},
+                              child: Center(
+                                child: Text(
+                                  'Generate OTP',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Times New Roman',
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                           Container(
                             height: 35,
@@ -173,64 +218,29 @@ class _SignupPageState extends State<SignupPage> {
                                       Color(0xFFFAAB3CE),
                                       Color(0xFFF8564B4)
                                     ])),
-                            /*  child: GestureDetector(
+                            child: GestureDetector(
                               onTap: () async {
                                 _focusEmail.unfocus();
                                 _focusPassword.unfocus();
-
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    _isProcessing = true;
-                                  });
-
-                                  User? user =
-                                  await FireAuth.signInUsingEmailPassword(
-                                    email: _emailTextController.text,
-                                    password: _passwordTextController.text,
-                                  );
-
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-
-                                  if (user != null) {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserHome(user: user),
-                                      ),
-                                    );
-                                  } else if (user == null) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: Container(
-                                            child: Text(errormessage),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }
-                                }
+                                signIn(otp);
                               },
                               child: !_isProcessing
                                   ? Center(
-                                child: Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Times New Roman',
-                                  ),
-                                ),
-                              )
+                                      child: Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Times New Roman',
+                                        ),
+                                      ),
+                                    )
                                   : Center(
-                                child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator()),
-                              ),
-                            ),*/
+                                      child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator()),
+                                    ),
+                            ),
                           ),
                         ],
                       ),
@@ -261,8 +271,20 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  Future<void> signIn(String otp) async {
+    await FirebaseAuth.instance
+        .signInWithCredential(PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otp,
+    ));
+  }
+
   ////////VARIABLES DECLARATION//////////
+ late  String phoneNumber, verificationId;
+  late String otp, authStatus;
   String dropdownvalue = 'List of Countries';
+  final _otpController = TextEditingController();
+  final _NumberController = TextEditingController();
   final _nicknameController = TextEditingController();
   final _numberController = TextEditingController();
   final _emailController = TextEditingController();
@@ -270,6 +292,8 @@ class _SignupPageState extends State<SignupPage> {
   final _conPasswordController = TextEditingController();
   final _focusName = FocusNode();
   final _focusEmail = FocusNode();
+  final _focusnumberotp = FocusNode();
+  final _focusotp = FocusNode();
   final _focusPassword = FocusNode();
   final _focusNumber = FocusNode();
   final _focusConfPassword = FocusNode();
