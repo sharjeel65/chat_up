@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'SignupPage.dart';
 String errormessage = '';
-
+String authStatus = '';
 class FireAuth {
   // For registering a new user
   static Future<User?> registerUsingEmailPassword({
@@ -13,9 +13,7 @@ class FireAuth {
   }) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
     User? user;
-
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email,
@@ -25,7 +23,8 @@ class FireAuth {
       await user!.updateDisplayName(name);
       await user.reload();
       user = auth.currentUser;
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      CollectionReference users = FirebaseFirestore.instance.collection(
+          'users');
       users.add({
         'email': email,
         'nickname': name,
@@ -140,7 +139,6 @@ class FireAuth {
     return refreshedUser;
   }
 }
-
 class errors {
   String error() {
     return errormessage;
