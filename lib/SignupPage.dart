@@ -81,7 +81,7 @@ class _SignupPageState extends State<SignupPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Form(
-                        // key: _formKey,
+                         key: _verifyFormKey,
                         child: Column(
                           children: [
                             Container(
@@ -153,6 +153,10 @@ class _SignupPageState extends State<SignupPage> {
                                     onChanged: (value) {
                                       otp = value;
                                     },
+                                    validator: (value) =>
+                                        Validator.validateOTP(
+                                          OTP: value,
+                                        ),
                                     controller: _otpController,
                                     focusNode: _focusotp,
                                     keyboardType: TextInputType.number,
@@ -180,35 +184,35 @@ class _SignupPageState extends State<SignupPage> {
                                 ],
                               ),
                             ),
-                            Container(
-                              height: 35,
-                              width: 245,
-                              margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  gradient: LinearGradient(
-                                      stops: [0.18, 0.4, 0.8],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Color(0xFFF6256D8),
-                                        Color(0xFFFAAB3CE),
-                                        Color(0xFFF8564B4)
-                                      ])),
-                              child: GestureDetector(
-                                onTap: () async {
+                            GestureDetector(
+                              onTap: () async {
+                                setState(() {
+                                  _VerificationProcessing1 =true;
+                                });
+                                if (_verifyFormKey.currentState!
+                                    .validate()) {
+                                  await verifyPhoneNumber(context);
                                   setState(() {
-                                    _VerificationProcessing1 =true;
+                                    _VerificationProcessing1 = false;
                                   });
-                                  if (_registerFormKey.currentState!
-                                      .validate()) {
-                                    await verifyPhoneNumber(context);
-                                    setState(() {
-                                      _VerificationProcessing1 = false;
-                                    });
-                                  }
-                                },
-                                  child: !_VerificationProcessing1
+                                }
+                              },
+                              child: Container(
+                                height: 35,
+                                width: 245,
+                                margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    gradient: LinearGradient(
+                                        stops: [0.18, 0.4, 0.8],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFFF6256D8),
+                                          Color(0xFFFAAB3CE),
+                                          Color(0xFFF8564B4)
+                                        ])),
+                                child: !_VerificationProcessing1
                                       ? Center(
                                     child: Text(
                                       'Generate OTP',
@@ -226,55 +230,55 @@ class _SignupPageState extends State<SignupPage> {
                                   ),
                               ),
                             ),
-                            Container(
-                              height: 35,
-                              width: 245,
-                              margin: EdgeInsets.only(top: 30),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  gradient: LinearGradient(
-                                      stops: [0.18, 0.4, 0.8],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Color(0xFFF6256D8),
-                                        Color(0xFFFAAB3CE),
-                                        Color(0xFFF8564B4)
-                                      ])),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  _focusEmail.unfocus();
-                                  _focusPassword.unfocus();
+                            GestureDetector(
+                              onTap: () async {
+                                _focusEmail.unfocus();
+                                _focusPassword.unfocus();
+                                setState(() {
+                                  _VerificationProcessing = true;
+                                });
+                                if (_verifyFormKey.currentState!
+                                    .validate()) {
+                                  await link(otp);
                                   setState(() {
-                                    _VerificationProcessing = true;
+                                    _VerificationProcessing = false;
                                   });
-                                  if (_registerFormKey.currentState!
-                                      .validate()) {
-                                    await link(otp);
-                                    setState(() {
-                                      _VerificationProcessing = false;
-                                    });
-                                  }
-                                  if (_user != null) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserHome(user: _user),
-                                      ),
-                                    );
-                                  } else if (_user == null) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: Container(
-                                            child: Text(errormessage),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }
-                                },
+                                }
+                                if (_user != null && linkverification) {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          UserHome(user: _user),
+                                    ),
+                                  );
+                                } else if (_user == null) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Container(
+                                          child: Text(errormessage),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: 35,
+                                width: 245,
+                                margin: EdgeInsets.only(top: 30),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    gradient: LinearGradient(
+                                        stops: [0.18, 0.4, 0.8],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFFF6256D8),
+                                          Color(0xFFFAAB3CE),
+                                          Color(0xFFF8564B4)
+                                        ])),
                                 child: !_VerificationProcessing
                                     ? Center(
                                   child: Text(
@@ -330,7 +334,9 @@ class _SignupPageState extends State<SignupPage> {
         verificationId: verificationId,
         smsCode: otp,
       );
-      await userforverification?.linkWithCredential(credential);
+      await userforverification?.linkWithCredential(credential).then((_) => {
+        linkverification = true
+      });
     } on FirebaseAuthException catch (e) {
       print('This is the error: \n' + e.toString());
     }
@@ -356,10 +362,11 @@ class _SignupPageState extends State<SignupPage> {
   final _focusNumber = FocusNode();
   final _focusConfPassword = FocusNode();
   final _registerFormKey = GlobalKey<FormState>();
+  final _verifyFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
   bool _VerificationProcessing = false;
   bool _VerificationProcessing1 = false;
-
+  bool linkverification = false;
 
   /////////////BUILD STARTED//////////////
   @override
