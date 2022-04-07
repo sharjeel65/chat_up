@@ -178,62 +178,62 @@ class _LoginPageState extends State<LoginPage> {
                               ],
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                            height: 35,
-                            width: 245,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                gradient: LinearGradient(
-                                    stops: [0.18, 0.4, 0.8],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xFFF6256D8),
-                                      Color(0xFFFAAB3CE),
-                                      Color(0xFFF8564B4)
-                                    ])),
-                            child: GestureDetector(
-                              onTap: () async {
-                                _focusEmail.unfocus();
-                                _focusPassword.unfocus();
+                          GestureDetector(
+                            onTap: () async {
+                              _focusEmail.unfocus();
+                              _focusPassword.unfocus();
 
-                                if (_formKey.currentState!.validate()) {
-                                  setState(() {
-                                    _isProcessing = true;
-                                  });
+                              if (_formKey.currentState!.validate()) {
+                                setState(() {
+                                  _isProcessing = true;
+                                });
 
-                                  User? user =
-                                      await FireAuth.signInUsingEmailPassword(
-                                    email: _emailTextController.text,
-                                    password: _passwordTextController.text,
+                                User? user =
+                                    await FireAuth.signInUsingEmailPassword(
+                                  email: _emailTextController.text,
+                                  password: _passwordTextController.text,
+                                );
+
+                                setState(() {
+                                  _isProcessing = false;
+                                });
+
+                                if (user != null) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          UserHome(user: user),
+                                    ),
                                   );
-
-                                  setState(() {
-                                    _isProcessing = false;
-                                  });
-
-                                  if (user != null) {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserHome(user: user),
-                                      ),
-                                    );
-                                  } else if (user == null) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: Container(
-                                            child: Text(errormessage),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }
+                                } else if (user == null) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Container(
+                                          child: Text(errormessage),
+                                        ),
+                                      );
+                                    },
+                                  );
                                 }
-                              },
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                              height: 35,
+                              width: 245,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  gradient: LinearGradient(
+                                      stops: [0.18, 0.4, 0.8],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xFFF6256D8),
+                                        Color(0xFFFAAB3CE),
+                                        Color(0xFFF8564B4)
+                                      ])),
                               child: !_isProcessing
                                   ? Center(
                                 child: Text(
@@ -270,9 +270,8 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       height: 50,
                       width: 500,
-                      margin: EdgeInsets.fromLTRB(150, 0, 150, 0),
+                      margin: EdgeInsets.fromLTRB(140, 0, 140, 0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
                             onTap: () {
