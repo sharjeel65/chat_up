@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'UserHome.dart';
@@ -25,7 +26,7 @@ class _SignupPageState extends State<SignupPage> {
       },
       verificationFailed: (FirebaseAuthException authException) {
         setState(() {
-          authStatus = "Authentication failed";
+          authStatus = authException.toString();
         });
       },
       codeSent: (String verId, [int? forceCodeResent]) {
@@ -52,261 +53,260 @@ class _SignupPageState extends State<SignupPage> {
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 700),
       pageBuilder: (_, __, ___) {
-        return GestureDetector(
-          onTap: () => {_focusnumberotp.unfocus(), _focusotp.unfocus()},
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    stops: [
-                      0.1,
-                      0.72,
-                      0.86,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFb0b4e5),
-                      Color(0xFF202c77),
-                      Color(0xFF141468),
-                    ],
+        return StatefulBuilder(builder: (context, setState) {
+          return GestureDetector(
+            onTap: () => {_focusnumberotp.unfocus(), _focusotp.unfocus()},
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      stops: [
+                        0.1,
+                        0.72,
+                        0.86,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFb0b4e5),
+                        Color(0xFF202c77),
+                        Color(0xFF141468),
+                      ],
+                    ),
                   ),
-                ),
-                height: 400,
-                width: 300,
-                child: IntrinsicHeight(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Form(
-                         key: _verifyFormKey,
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                              width: 245,
-                              height: 60,
-                              padding: EdgeInsets.only(bottom: 0),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(6)),
-                                    height: 40,
-                                    width: 245,
-                                  ),
-                                  TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    textDirection: TextDirection.ltr,
-                                    controller: _NumberController,
-                                    focusNode: _focusnumberotp,
-                                    validator: (value) =>
-                                        Validator.validateNumber(
-                                          number: value,
-                                        ),
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(5),
-                                      hintText: 'Mobile Number',
-                                      hintStyle: TextStyle(
-                                        color: Color(0xFFF338BFF),
-                                        fontSize: 14,
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(6.0),
-                                        borderSide: BorderSide(
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                      errorStyle: TextStyle(
-                                        height: 1,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                    onChanged: (value) {
-                                      phoneNumber = value;
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              width: 245,
-                              height: 60,
-                              padding: EdgeInsets.only(bottom: 0),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    height: 40,
-                                    width: 245,
-                                  ),
-                                  TextFormField(
-                                    onChanged: (value) {
-                                      otp = value;
-                                    },
-                                    validator: (value) =>
-                                        Validator.validateOTP(
-                                          OTP: value,
-                                        ),
-                                    controller: _otpController,
-                                    focusNode: _focusotp,
-                                    keyboardType: TextInputType.number,
-                                    textDirection: TextDirection.ltr,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(5),
-                                      hintText: 'Verification Code',
-                                      hintStyle: TextStyle(
-                                        color: Color(0xFFF338BFF),
-                                        fontSize: 14,
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(6.0),
-                                        borderSide: BorderSide(
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                      errorStyle: TextStyle(
-                                        height: 1,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                setState(() {
-                                  _VerificationProcessing1 =true;
-                                });
-                                if (_verifyFormKey.currentState!
-                                    .validate()) {
-                                  await verifyPhoneNumber(context);
-                                  setState(() {
-                                    _VerificationProcessing1 = false;
-                                  });
-                                }
-                              },
-                              child: Container(
-                                height: 35,
+                  height: 400,
+                  width: 300,
+                  child: IntrinsicHeight(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Form(
+                          key: _verifyFormKey,
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                 width: 245,
-                                margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    gradient: LinearGradient(
-                                        stops: [0.18, 0.4, 0.8],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Color(0xFFF6256D8),
-                                          Color(0xFFFAAB3CE),
-                                          Color(0xFFF8564B4)
-                                        ])),
-                                child: !_VerificationProcessing1
-                                      ? Center(
-                                    child: Text(
-                                      'Generate OTP',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Times New Roman',
+                                height: 60,
+                                padding: EdgeInsets.only(bottom: 0),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(6)),
+                                      height: 40,
+                                      width: 245,
+                                    ),
+                                    TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      textDirection: TextDirection.ltr,
+                                      controller: _NumberController,
+                                      focusNode: _focusnumberotp,
+                                      validator: (value) =>
+                                          Validator.validateNumber(
+                                        number: value,
                                       ),
-                                    ),
-                                  )
-                                      : Center(
-                                    child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator()),
-                                  ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                _focusEmail.unfocus();
-                                _focusPassword.unfocus();
-                                setState(() {
-                                  _VerificationProcessing = true;
-                                });
-                                if (_verifyFormKey.currentState!
-                                    .validate()) {
-                                  await link(otp);
-                                  setState(() {
-                                    _VerificationProcessing = false;
-                                  });
-                                }
-                                if (_user != null && linkverification) {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          UserHome(user: _user),
-                                    ),
-                                  );
-                                } else if (_user == null) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        content: Container(
-                                          child: Text(errormessage),
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(5),
+                                        hintText: 'Mobile Number',
+                                        hintStyle: TextStyle(
+                                          color: Color(0xFFF338BFF),
+                                          fontSize: 14,
                                         ),
-                                      );
-                                    },
-                                  );
-                                }
-                              },
-                              child: Container(
-                                height: 35,
-                                width: 245,
-                                margin: EdgeInsets.only(top: 30),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    gradient: LinearGradient(
-                                        stops: [0.18, 0.4, 0.8],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Color(0xFFF6256D8),
-                                          Color(0xFFFAAB3CE),
-                                          Color(0xFFF8564B4)
-                                        ])),
-                                child: !_VerificationProcessing
-                                    ? Center(
-                                  child: Text(
-                                    'Submit',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Times New Roman',
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        errorStyle: TextStyle(
+                                          height: 1,
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
+                                      onChanged: (value) {
+                                        phoneNumber = value;
+                                      },
                                     ),
-                                  ),
-                                )
-                                    : Center(
-                                  child: Container(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator()),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                width: 245,
+                                height: 60,
+                                padding: EdgeInsets.only(bottom: 0),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      height: 40,
+                                      width: 245,
+                                    ),
+                                    TextFormField(
+                                      onChanged: (value) {
+                                        otp = value;
+                                      },
+                                      controller: _otpController,
+                                      focusNode: _focusotp,
+                                      keyboardType: TextInputType.number,
+                                      textDirection: TextDirection.ltr,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(5),
+                                        hintText: 'Verification Code',
+                                        hintStyle: TextStyle(
+                                          color: Color(0xFFF338BFF),
+                                          fontSize: 14,
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        errorStyle: TextStyle(
+                                          height: 1,
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    _VerificationProcessing1 = true;
+                                  });
+                                  if (_verifyFormKey.currentState!.validate()) {
+                                    await verifyPhoneNumber(context);
+                                    setState(() {
+                                      _VerificationProcessing1 = false;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 35,
+                                  width: 245,
+                                  margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      gradient: LinearGradient(
+                                          stops: [0.18, 0.4, 0.8],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0xFFF6256D8),
+                                            Color(0xFFFAAB3CE),
+                                            Color(0xFFF8564B4)
+                                          ])),
+                                  child: !_VerificationProcessing1
+                                      ? Center(
+                                          child: Text(
+                                            'Generate OTP',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Times New Roman',
+                                            ),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  _focusEmail.unfocus();
+                                  _focusPassword.unfocus();
+                                  setState(() {
+                                    _VerificationProcessing = true;
+                                  });
+                                  if (_verifyFormKey.currentState!.validate()) {
+                                    await link(otp);
+                                    setState(() {
+                                      _VerificationProcessing = false;
+                                    });
+                                  }
+                                  if (_user != null && linkverification) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserHome(user: _user),
+                                      ),
+                                    );
+                                  } else if (_user == null) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Container(
+                                            child: Text(errormessage),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 35,
+                                  width: 245,
+                                  margin: EdgeInsets.only(top: 30),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      gradient: LinearGradient(
+                                          stops: [0.18, 0.4, 0.8],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0xFFF6256D8),
+                                            Color(0xFFFAAB3CE),
+                                            Color(0xFFF8564B4)
+                                          ])),
+                                  child: !_VerificationProcessing
+                                      ? Center(
+                                          child: Text(
+                                            'Submit',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Times New Roman',
+                                            ),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
+          );
+        });
       },
       transitionBuilder: (_, anim, __, child) {
         Tween<Offset> tween;
@@ -329,17 +329,17 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> link(String otp) async {
     FirebaseAuth.instance;
-    try {
-      AuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: otp,
-      );
-      await userforverification?.linkWithCredential(credential).then((_) => {
-        linkverification = true
-      });
-    } on FirebaseAuthException catch (e) {
-      print('This is the error: \n' + e.toString());
-    }
+    AuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otp,
+    );
+    await userforverification?.linkWithCredential(credential).then((_) => {
+          linkverification = true,
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(_user.uid)
+              .update({'verification': true})
+        });
   }
 
   ////////VARIABLES DECLARATION//////////
@@ -402,14 +402,8 @@ class _SignupPageState extends State<SignupPage> {
           child: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minWidth: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
-                minHeight: MediaQuery
-                    .of(context)
-                    .size
-                    .height,
+                minWidth: MediaQuery.of(context).size.width,
+                minHeight: MediaQuery.of(context).size.height,
               ),
               child: IntrinsicHeight(
                 child: Column(
@@ -450,10 +444,9 @@ class _SignupPageState extends State<SignupPage> {
                                   width: 245,
                                 ),
                                 TextFormField(
-                                  validator: (value) =>
-                                      Validator.validateName(
-                                        name: value,
-                                      ),
+                                  validator: (value) => Validator.validateName(
+                                    name: value,
+                                  ),
                                   focusNode: _focusName,
                                   controller: _nicknameController,
                                   textDirection: TextDirection.ltr,
@@ -461,7 +454,7 @@ class _SignupPageState extends State<SignupPage> {
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     contentPadding:
-                                    EdgeInsets.fromLTRB(8, 8, 8, 8),
+                                        EdgeInsets.fromLTRB(8, 8, 8, 8),
                                     errorStyle: TextStyle(height: 1),
                                     hintText: 'Enter nickname',
                                     hintStyle: TextStyle(
@@ -500,16 +493,16 @@ class _SignupPageState extends State<SignupPage> {
                                   focusNode: _focusNumber,
                                   validator: (value) =>
                                       Validator.validateNumber(
-                                        number: value,
-                                      ),
+                                    number: value,
+                                  ),
                                   controller: _numberController,
                                   keyboardType: TextInputType.number,
                                   textDirection: TextDirection.ltr,
                                   decoration: InputDecoration(
                                     contentPadding:
-                                    EdgeInsets.fromLTRB(8, 8, 8, 8),
+                                        EdgeInsets.fromLTRB(8, 8, 8, 8),
                                     errorStyle:
-                                    TextStyle(height: 1, fontSize: 12),
+                                        TextStyle(height: 1, fontSize: 12),
                                     border: InputBorder.none,
                                     hintMaxLines: 2,
                                     hintText: 'Enter number',
@@ -546,10 +539,9 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                                 TextFormField(
                                   focusNode: _focusEmail,
-                                  validator: (value) =>
-                                      Validator.validateEmail(
-                                        email: value,
-                                      ),
+                                  validator: (value) => Validator.validateEmail(
+                                    email: value,
+                                  ),
                                   controller: _emailController,
                                   keyboardType: TextInputType.emailAddress,
                                   textDirection: TextDirection.ltr,
@@ -596,8 +588,8 @@ class _SignupPageState extends State<SignupPage> {
                                   focusNode: _focusPassword,
                                   validator: (value) =>
                                       Validator.validatePassword(
-                                        password: value,
-                                      ),
+                                    password: value,
+                                  ),
                                   controller: _passwordController,
                                   obscureText: true,
                                   keyboardType: TextInputType.text,
@@ -645,9 +637,9 @@ class _SignupPageState extends State<SignupPage> {
                                   focusNode: _focusConfPassword,
                                   validator: (value) =>
                                       Validator.ValidateConfPassword(
-                                        password: _passwordController.text,
-                                        Confpassword: value,
-                                      ),
+                                    password: _passwordController.text,
+                                    Confpassword: value,
+                                  ),
                                   controller: _conPasswordController,
                                   obscureText: true,
                                   keyboardType: TextInputType.text,
@@ -678,20 +670,18 @@ class _SignupPageState extends State<SignupPage> {
                           ///////SUBMIT BUTTON///////
                           GestureDetector(
                             onTap: () async {
-
-                              setState(() {
+                               setState(() {
                                 print(_numberController.text);
                               });
 
-
                               if (_registerFormKey.currentState!.validate()) {
                                 setState(
-                                      () {
+                                  () {
                                     _isProcessing = true;
                                   },
                                 );
                                 User? user =
-                                await FireAuth.registerUsingEmailPassword(
+                                    await FireAuth.registerUsingEmailPassword(
                                   name: _nicknameController.text,
                                   number: _numberController.text,
                                   email: _emailController.text,
@@ -699,13 +689,12 @@ class _SignupPageState extends State<SignupPage> {
                                 );
                                 _user = user!;
                                 setState(
-                                      () {
+                                  () {
                                     _isProcessing = false;
                                   },
                                 );
-                                showCustomDialog(context);
+                              showCustomDialog(context);
                               }
-
                             },
                             child: Container(
                               margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -720,26 +709,26 @@ class _SignupPageState extends State<SignupPage> {
                                   colors: [
                                     Color(0xFFF6256D8),
                                     Color(0xFFFAAB3CE),
-                                    Color(0xFFF8564B4)
+                                    Color(0xFFF8564B4),
                                   ],
                                 ),
                               ),
                               child: !_isProcessing
                                   ? Center(
-                                child: Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Times New Roman',
-                                  ),
-                                ),
-                              )
+                                      child: Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Times New Roman',
+                                        ),
+                                      ),
+                                    )
                                   : Center(
-                                child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator()),
-                              ),
+                                      child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator()),
+                                    ),
                             ),
                           ),
                         ],
@@ -793,7 +782,7 @@ class _SignupPageState extends State<SignupPage> {
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   image:
-                                  AssetImage("assets/images/twitter.png"),
+                                      AssetImage("assets/images/twitter.png"),
                                   fit: BoxFit.fill,
                                 ),
                               ),
@@ -811,7 +800,7 @@ class _SignupPageState extends State<SignupPage> {
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   image:
-                                  AssetImage("assets/images/facebook.png"),
+                                      AssetImage("assets/images/facebook.png"),
                                   fit: BoxFit.fill,
                                 ),
                               ),
