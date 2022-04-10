@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'SignupPage.dart';
 String errormessage = '';
 String authStatus = '';
+User? userforverification;
 class FireAuth {
   // For registering a new user
   static Future<User?> registerUsingEmailPassword({
@@ -20,16 +20,19 @@ class FireAuth {
         password: password,
       );
       user = userCredential.user;
+      userforverification= userCredential.user;
       await user!.updateDisplayName(name);
       await user.reload();
       user = auth.currentUser;
-      CollectionReference users = FirebaseFirestore.instance.collection(
-          'users');
-      users.add({
+      firestore.collection(
+          'users').doc(user?.uid).set({
         'email': email,
         'nickname': name,
         'number': number,
         'Password': password,
+        'verification': false,
+      }).then((_) => {
+        print('success')
       });
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

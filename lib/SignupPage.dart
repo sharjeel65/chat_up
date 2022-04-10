@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'UserHome.dart';
 import 'Validator.dart';
 import 'Auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
+
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
 
@@ -24,7 +26,7 @@ class _SignupPageState extends State<SignupPage> {
       },
       verificationFailed: (FirebaseAuthException authException) {
         setState(() {
-          authStatus = "Authentication failed";
+          authStatus = authException.toString();
         });
       },
       codeSent: (String verId, [int? forceCodeResent]) {
@@ -51,206 +53,260 @@ class _SignupPageState extends State<SignupPage> {
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 700),
       pageBuilder: (_, __, ___) {
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  stops: [
-                    0.1,
-                    0.72,
-                    0.86,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFb0b4e5),
-                    Color(0xFF202c77),
-                    Color(0xFF141468),
-                  ],
-                ),
-              ),
-              height: 400,
-              width: 300,
-              child: IntrinsicHeight(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Form(
-                      // key: _formKey,
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                            width: 245,
-                            height: 60,
-                            padding: EdgeInsets.only(bottom: 0),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(6)),
-                                  height: 40,
-                                  width: 245,
-                                ),
-                                TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  textDirection: TextDirection.ltr,
-                                  controller: _numberController,
-                                  focusNode: _focusnumberotp,
-                                  validator: (value) =>
-                                      Validator.validateNumber(
-                                    number: value,
-                                  ),
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(5),
-                                    hintText: 'Mobile Number',
-                                    hintStyle: TextStyle(
-                                      color: Color(0xFFF338BFF),
-                                      fontSize: 14,
+        return StatefulBuilder(builder: (context, setState) {
+          return GestureDetector(
+            onTap: () => {_focusnumberotp.unfocus(), _focusotp.unfocus()},
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      stops: [
+                        0.1,
+                        0.72,
+                        0.86,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFb0b4e5),
+                        Color(0xFF202c77),
+                        Color(0xFF141468),
+                      ],
+                    ),
+                  ),
+                  height: 400,
+                  width: 300,
+                  child: IntrinsicHeight(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Form(
+                          key: _verifyFormKey,
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                width: 245,
+                                height: 60,
+                                padding: EdgeInsets.only(bottom: 0),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(6)),
+                                      height: 40,
+                                      width: 245,
                                     ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      borderSide: BorderSide(
-                                        color: Colors.red,
+                                    TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      textDirection: TextDirection.ltr,
+                                      controller: _NumberController,
+                                      focusNode: _focusnumberotp,
+                                      validator: (value) =>
+                                          Validator.validateNumber(
+                                        number: value,
                                       ),
-                                    ),
-                                    errorStyle: TextStyle(
-                                      height: 1,
-                                    ),
-                                    border: InputBorder.none,
-                                  ),
-                                  onChanged: (value) {
-                                    phoneNumber = value;
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: 245,
-                            height: 60,
-                            padding: EdgeInsets.only(bottom: 0),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  height: 40,
-                                  width: 245,
-                                ),
-                                TextFormField(
-                                  onChanged: (value) {
-                                    otp = value;
-                                  },
-                                  controller: _otpController,
-                                  focusNode: _focusotp,
-                                  keyboardType: TextInputType.number,
-                                  textDirection: TextDirection.ltr,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.all(5),
-                                    hintText: 'Verification Code',
-                                    hintStyle: TextStyle(
-                                      color: Color(0xFFF338BFF),
-                                      fontSize: 14,
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      borderSide: BorderSide(
-                                        color: Colors.red,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(5),
+                                        hintText: 'Mobile Number',
+                                        hintStyle: TextStyle(
+                                          color: Color(0xFFF338BFF),
+                                          fontSize: 14,
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        errorStyle: TextStyle(
+                                          height: 1,
+                                        ),
+                                        border: InputBorder.none,
                                       ),
+                                      onChanged: (value) {
+                                        phoneNumber = value;
+                                      },
                                     ),
-                                    errorStyle: TextStyle(
-                                      height: 1,
-                                    ),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            height: 35,
-                            width: 245,
-                            margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                gradient: LinearGradient(
-                                    stops: [0.18, 0.4, 0.8],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xFFF6256D8),
-                                      Color(0xFFFAAB3CE),
-                                      Color(0xFFF8564B4)
-                                    ])),
-                            child: GestureDetector(
-                              onTap: () => {verifyPhoneNumber(context)},
-                              child: Center(
-                                child: Text(
-                                  'Generate OTP',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Times New Roman',
-                                  ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ),
-                          Container(
-                            height: 35,
-                            width: 245,
-                            margin: EdgeInsets.only(top: 30),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                gradient: LinearGradient(
-                                    stops: [0.18, 0.4, 0.8],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xFFF6256D8),
-                                      Color(0xFFFAAB3CE),
-                                      Color(0xFFF8564B4)
-                                    ])),
-                            child: GestureDetector(
-                              onTap: () async {
-                                _focusEmail.unfocus();
-                                _focusPassword.unfocus();
-                                signIn(otp);
-                              },
-                              child: !_isProcessing
-                                  ? Center(
-                                      child: Text(
-                                        'Submit',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: 'Times New Roman',
-                                        ),
+                              Container(
+                                width: 245,
+                                height: 60,
+                                padding: EdgeInsets.only(bottom: 0),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(2, 0, 0, 5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
-                                    )
-                                  : Center(
-                                      child: Container(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator()),
+                                      height: 40,
+                                      width: 245,
                                     ),
-                            ),
+                                    TextFormField(
+                                      onChanged: (value) {
+                                        otp = value;
+                                      },
+                                      controller: _otpController,
+                                      focusNode: _focusotp,
+                                      keyboardType: TextInputType.number,
+                                      textDirection: TextDirection.ltr,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(5),
+                                        hintText: 'Verification Code',
+                                        hintStyle: TextStyle(
+                                          color: Color(0xFFF338BFF),
+                                          fontSize: 14,
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6.0),
+                                          borderSide: BorderSide(
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                        errorStyle: TextStyle(
+                                          height: 1,
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    _VerificationProcessing1 = true;
+                                  });
+                                  if (_verifyFormKey.currentState!.validate()) {
+                                    await verifyPhoneNumber(context);
+                                    setState(() {
+                                      _VerificationProcessing1 = false;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  height: 35,
+                                  width: 245,
+                                  margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      gradient: LinearGradient(
+                                          stops: [0.18, 0.4, 0.8],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0xFFF6256D8),
+                                            Color(0xFFFAAB3CE),
+                                            Color(0xFFF8564B4)
+                                          ])),
+                                  child: !_VerificationProcessing1
+                                      ? Center(
+                                          child: Text(
+                                            'Generate OTP',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Times New Roman',
+                                            ),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  _focusEmail.unfocus();
+                                  _focusPassword.unfocus();
+                                  setState(() {
+                                    _VerificationProcessing = true;
+                                  });
+                                  if (_verifyFormKey.currentState!.validate()) {
+                                    await link(otp);
+                                    setState(() {
+                                      _VerificationProcessing = false;
+                                    });
+                                  }
+                                  if (_user != null && linkverification) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserHome(user: _user),
+                                      ),
+                                    );
+                                  } else if (_user == null) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Container(
+                                            child: Text(errormessage),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 35,
+                                  width: 245,
+                                  margin: EdgeInsets.only(top: 30),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      gradient: LinearGradient(
+                                          stops: [0.18, 0.4, 0.8],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Color(0xFFF6256D8),
+                                            Color(0xFFFAAB3CE),
+                                            Color(0xFFF8564B4)
+                                          ])),
+                                  child: !_VerificationProcessing
+                                      ? Center(
+                                          child: Text(
+                                            'Submit',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Times New Roman',
+                                            ),
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Container(
+                                              height: 20,
+                                              width: 20,
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+          );
+        });
       },
       transitionBuilder: (_, anim, __, child) {
         Tween<Offset> tween;
@@ -271,16 +327,24 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  Future<void> signIn(String otp) async {
-    await FirebaseAuth.instance
-        .signInWithCredential(PhoneAuthProvider.credential(
+  Future<void> link(String otp) async {
+    FirebaseAuth.instance;
+    AuthCredential credential = PhoneAuthProvider.credential(
       verificationId: verificationId,
       smsCode: otp,
-    ));
+    );
+    await userforverification?.linkWithCredential(credential).then((_) => {
+          linkverification = true,
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(_user.uid)
+              .update({'verification': true})
+        });
   }
 
   ////////VARIABLES DECLARATION//////////
- late  String phoneNumber, verificationId;
+  late User _user;
+  late String phoneNumber, verificationId;
   late String otp, authStatus;
   String dropdownvalue = 'List of Countries';
   final _otpController = TextEditingController();
@@ -298,7 +362,11 @@ class _SignupPageState extends State<SignupPage> {
   final _focusNumber = FocusNode();
   final _focusConfPassword = FocusNode();
   final _registerFormKey = GlobalKey<FormState>();
+  final _verifyFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
+  bool _VerificationProcessing = false;
+  bool _VerificationProcessing1 = false;
+  bool linkverification = false;
 
   /////////////BUILD STARTED//////////////
   @override
@@ -600,72 +668,51 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           ///////SUBMIT BUTTON///////
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                            height: 35,
-                            width: 245,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              gradient: const LinearGradient(
-                                stops: [0.18, 0.4, 0.8],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Color(0xFFF6256D8),
-                                  Color(0xFFFAAB3CE),
-                                  Color(0xFFF8564B4)
-                                ],
-                              ),
-                            ),
-                            child: GestureDetector(
-                              onTap: () async {
-                                showCustomDialog(context);
+                          GestureDetector(
+                            onTap: () async {
+                               setState(() {
+                                print(_numberController.text);
+                              });
 
-                                setState(() {
-                                  print(_numberController.text);
-                                });
-/*
+                              if (_registerFormKey.currentState!.validate()) {
                                 setState(
                                   () {
                                     _isProcessing = true;
                                   },
                                 );
-
-                                if (_registerFormKey.currentState!.validate()) {
-                                  User? user =
-                                      await FireAuth.registerUsingEmailPassword(
-                                    name: _nicknameController.text,
-                                    number: _numberController.text,
-                                    email: _emailController.text,
-                                    password: _passwordController.text,
-                                  );
-                                  setState(
-                                    () {
-                                      _isProcessing = false;
-                                    },
-                                  );
-
-                                  if (user != null) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserHome(user: user),
-                                      ),
-                                    );
-                                  } else if (user == null) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: Container(
-                                            child: Text(errormessage),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }
-                                }*/
-                              },
+                                User? user =
+                                    await FireAuth.registerUsingEmailPassword(
+                                  name: _nicknameController.text,
+                                  number: _numberController.text,
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                );
+                                _user = user!;
+                                setState(
+                                  () {
+                                    _isProcessing = false;
+                                  },
+                                );
+                              showCustomDialog(context);
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                              height: 35,
+                              width: 245,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                gradient: const LinearGradient(
+                                  stops: [0.18, 0.4, 0.8],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFFF6256D8),
+                                    Color(0xFFFAAB3CE),
+                                    Color(0xFFF8564B4),
+                                  ],
+                                ),
+                              ),
                               child: !_isProcessing
                                   ? Center(
                                       child: Text(
@@ -704,7 +751,7 @@ class _SignupPageState extends State<SignupPage> {
                     Container(
                       height: 50,
                       width: 500,
-                      margin: EdgeInsets.fromLTRB(150, 0, 150, 0),
+                      margin: EdgeInsets.fromLTRB(140, 0, 140, 0),
                       child: Row(
                         children: [
                           GestureDetector(

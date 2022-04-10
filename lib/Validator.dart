@@ -25,7 +25,20 @@ class Validator {
     }
     return null;
   }
+  static String? validateOTP({required String? OTP}) {
+    if (OTP == null) {
+      return null;
+    }
 
+    RegExp NumberRegExp = RegExp(r"^[0-9]{6}$");
+
+    if (OTP.isEmpty) {
+      return 'OTP can\'t be empty';
+    } else if (!NumberRegExp.hasMatch(OTP)) {
+      return 'Enter a correct 6 digit Number, no symbols';
+    }
+    return null;
+  }
   static String? validateEmail({required String? email}) {
     if (email == null) {
       return null;
