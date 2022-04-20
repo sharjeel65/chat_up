@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:chat_up/UserHome.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   void _navigatetosignup(BuildContext context) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => SignupPage()));
+        .push(MaterialPageRoute(builder: (context) => SignupPage(verificat: false, userfromsignin: user!,)));
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -30,8 +31,22 @@ class _LoginPageState extends State<LoginPage> {
   final _focusEmail = FocusNode();
   final _focusPassword = FocusNode();
   bool _isProcessing = false;
-
+  late DocumentSnapshot snapshot;
   User? user = FirebaseAuth.instance.currentUser;
+
+  Future<bool> userVerification() async {
+    final data = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get();
+    snapshot = data as DocumentSnapshot<Object?>;
+    var map = snapshot.data() as Map;
+    var verification = map['verification'];
+    bool verify = verification;
+    print(map);
+    print(verification);
+    return verify;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -199,12 +214,16 @@ class _LoginPageState extends State<LoginPage> {
                                 });
 
                                 if (user != null) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          UserHome(user: user),
-                                    ),
-                                  );
+                                  if (await userVerification()) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserHome(user: user),
+                                      ),
+                                    );
+                                  } else{
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignupPage(verificat: true, userfromsignin: user,)));
+                                  }
                                 } else if (user == null) {
                                   showDialog(
                                     context: context,
@@ -236,20 +255,20 @@ class _LoginPageState extends State<LoginPage> {
                                       ])),
                               child: !_isProcessing
                                   ? Center(
-                                child: Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Times New Roman',
-                                  ),
-                                ),
-                              )
+                                      child: Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Times New Roman',
+                                        ),
+                                      ),
+                                    )
                                   : Center(
-                                child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator()),
-                              ),
+                                      child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator()),
+                                    ),
                             ),
                           ),
                         ],
