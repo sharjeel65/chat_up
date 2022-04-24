@@ -1,19 +1,40 @@
 import 'package:chat_up/singlechat.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ChatCard extends StatefulWidget {
-  const ChatCard({Key? key}) : super(key: key);
+class ChatroomCard extends StatefulWidget {
+  QueryDocumentSnapshot<Object?>? data;
+  late int index;
+  ChatroomCard({Key? key, required this.data, required this.index})
+      : super(key: key);
 
   @override
-  State<ChatCard> createState() => _ChatCardState();
+  State<ChatroomCard> createState() => _ChatroomCardState();
 }
 
-class _ChatCardState extends State<ChatCard> {
+class _ChatroomCardState extends State<ChatroomCard> {
+  late int index;
+  late QueryDocumentSnapshot<Object?>? doc;
+  late String ID = doc!.reference.id;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    doc = widget.data;
+    index = widget.index;
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> singleChat(uid: 'uid',)));
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => singleChat(
+                  uid: doc?.reference.id,
+                )));
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(8, 0, 8, 5),
@@ -39,6 +60,8 @@ class _ChatCardState extends State<ChatCard> {
             Expanded(
               flex: 1,
               child: Container(
+                height: 30,
+                width: 30,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -49,45 +72,49 @@ class _ChatCardState extends State<ChatCard> {
             Expanded(
               flex: 5,
               child: Container(
-                color: Colors.orange,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      flex: 5,
+                    Flexible(
+                      fit: FlexFit.loose,
                       child: Container(
-                        margin: EdgeInsets.only(right: 250),
-                        color: Colors.blueAccent,
-                        child: Center(
-                          child: Text(
-                            'Halak',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        width: double.infinity,
+                        color: Colors.blue,
+                        child: Text(
+                          doc!.reference.id,
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
-                    Expanded(
+                    Flexible(
+                      fit: FlexFit.loose,
                       flex: 3,
                       child: Container(
-                        color: Colors.green,
                         child: Row(
                           children: [
-                            Expanded(flex: 5,
+                            Expanded(
+                              flex: 5,
                               child: Container(
-                                color: Colors.brown,
+                                color: Colors.deepOrange,
                                 child: Text(
-                                  'this is a message which will come from firebase in real time',
+                                  'message from firebase in real time nor snga e',
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
-                            Expanded(flex: 1,
+                            Expanded(
+                              flex: 1,
                               child: Container(
-                                color: Colors.indigo,
+                                color: Colors.blue,
+                                width: double.infinity,
                                 child: Text(
                                   '2 hours ago',
+                                  textAlign: TextAlign.left,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -99,7 +126,7 @@ class _ChatCardState extends State<ChatCard> {
                   ],
                 ),
               ),
-            ),
+            )
           ],
         ),
 

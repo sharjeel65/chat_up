@@ -43,7 +43,6 @@ class _SignupPageState extends State<SignupPage> {
       },
     );
   }
-
   showCustomDialog(BuildContext context) {
     showGeneralDialog(
       context: context,
@@ -703,6 +702,12 @@ late bool verificate;
                           ///////SUBMIT BUTTON///////
                           GestureDetector(
                             onTap: () async {
+                              _focusEmail.unfocus();
+                              _focusPassword.unfocus();
+                              _focusotp.unfocus();
+                              _focusName.unfocus();
+                              _focusConfPassword.unfocus();
+                              _focusNumber.unfocus();
                                setState(() {
                                 print(_numberController.text);
                               });
