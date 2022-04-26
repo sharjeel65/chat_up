@@ -5,13 +5,17 @@ import 'UserHome.dart';
 import 'Validator.dart';
 import 'Auth.dart';
 import 'dart:async';
+
 class SignupPage extends StatefulWidget {
   final bool verificat;
-  final User userfromsignin;
-  const SignupPage({required this.verificat, required this.userfromsignin });
+  final User? userfromsignin;
+
+  const SignupPage({required this.verificat, required this.userfromsignin});
+
   @override
   State<SignupPage> createState() => _SignupPageState();
 }
+
 class _SignupPageState extends State<SignupPage> {
   ///////FUNCTIONS DECLARATION/////////////
   Future<void> verifyPhoneNumber(BuildContext context) async {
@@ -43,6 +47,7 @@ class _SignupPageState extends State<SignupPage> {
       },
     );
   }
+
   showCustomDialog(BuildContext context) {
     showGeneralDialog(
       context: context,
@@ -183,7 +188,7 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                               GestureDetector(
                                 onTap: () async {
-                                  print('This is Phone Number +'+phoneNumber);
+                                  print('This is Phone Number +' + phoneNumber);
                                   setState(() {
                                     _VerificationProcessing1 = true;
                                   });
@@ -193,7 +198,6 @@ class _SignupPageState extends State<SignupPage> {
                                       _VerificationProcessing1 = false;
                                     });
                                   }
-
                                 },
                                 child: Container(
                                   height: 35,
@@ -234,21 +238,22 @@ class _SignupPageState extends State<SignupPage> {
                                   print(widget.userfromsignin);
                                   print(_verifyFormKey.currentState);
                                   print(otp);
-                                  print(_verifyFormKey.currentState?.validate());
+                                  print(
+                                      _verifyFormKey.currentState?.validate());
                                   _focusEmail.unfocus();
                                   _focusPassword.unfocus();
                                   setState(() {
                                     _VerificationProcessing = true;
                                   });
-                                  if(widget.userfromsignin == null){
-                                    if (_verifyFormKey.currentState!.validate()) {
+                                  if (widget.userfromsignin == null) {
+                                    if (_verifyFormKey.currentState!
+                                        .validate()) {
                                       await link(otp);
                                       setState(() {
                                         _VerificationProcessing = false;
                                       });
                                     }
-                                  }
-                                  else{
+                                  } else {
                                     await link(otp);
                                     setState(() {
                                       _VerificationProcessing = false;
@@ -346,21 +351,23 @@ class _SignupPageState extends State<SignupPage> {
       verificationId: verificationId,
       smsCode: otp,
     );
-    print("this is verification id: "+verificationId);
-    print('this is credential:'+credential.toString());
-    print('this is otp:'+otp);
+    print("this is verification id: " + verificationId);
+    print('this is credential:' + credential.toString());
+    print('this is otp:' + otp);
     print(userforverification);
-    await userforverification?.linkWithCredential(credential).then((_) => {
-          linkverification = true,
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(_user.uid)
-              .update({'verification': true})
-        });
+    await userforverification?.linkWithCredential(credential).then(
+          (_) => {
+            linkverification = true,
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(_user?.uid)
+                .update({'verification': true}),
+          },
+        );
   }
 
   ////////VARIABLES DECLARATION//////////
-  late User _user;
+  late User? _user;
   late String phoneNumber, verificationId;
   late String otp, authStatus;
   String dropdownvalue = 'List of Countries';
@@ -378,13 +385,14 @@ class _SignupPageState extends State<SignupPage> {
   final _focusPassword = FocusNode();
   final _focusNumber = FocusNode();
   final _focusConfPassword = FocusNode();
-   GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
-   GlobalKey<FormState> _verifyFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _verifyFormKey = GlobalKey<FormState>();
   bool _isProcessing = false;
   bool _VerificationProcessing = false;
   bool _VerificationProcessing1 = false;
   bool linkverification = false;
-late bool verificate;
+  late bool verificate;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -392,14 +400,15 @@ late bool verificate;
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       verificate = widget.verificat;
-      if(verificate){
-        _user =widget.userfromsignin;
+      if (verificate) {
+        _user = widget.userfromsignin;
         print(widget.verificat);
         userforverification = widget.userfromsignin;
         showCustomDialog(context);
       }
     });
   }
+
   /////////////BUILD STARTED//////////////
   @override
   Widget build(BuildContext context) {
@@ -708,7 +717,7 @@ late bool verificate;
                               _focusName.unfocus();
                               _focusConfPassword.unfocus();
                               _focusNumber.unfocus();
-                               setState(() {
+                              setState(() {
                                 print(_numberController.text);
                               });
 
@@ -731,7 +740,7 @@ late bool verificate;
                                     _isProcessing = false;
                                   },
                                 );
-                              showCustomDialog(context);
+                                showCustomDialog(context);
                               }
                             },
                             child: Container(

@@ -1,4 +1,4 @@
-import 'package:chat_up/singlechat.dart';
+import 'package:chat_up/ChatroomSinglechat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,7 @@ class _ChatroomCardState extends State<ChatroomCard> {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => singleChat(
+            builder: (context) => ChatroomSingleChat(
                   uid: doc?.reference.id,
                 )));
       },

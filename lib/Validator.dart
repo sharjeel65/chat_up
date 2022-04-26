@@ -81,4 +81,16 @@ class Validator {
     }
     return null;
   }
+  static String? validateMessage({required String? message}) {
+    if (message == null) {
+      return null;
+    }
+
+    if (message.isEmpty) {
+      return 'Message can\'t be empty';
+    } else if (message.length < 1) {
+      return 'Enter a message with length at least 1';
+    }
+    return null;
+  }
 }
