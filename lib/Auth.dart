@@ -25,6 +25,12 @@ class FireAuth {
       await user.updatePhotoURL('https://firebasestorage.googleapis.com/v0/b/chatup-6a40e.appspot.com/o/profile%20(1).png?alt=media&token=eb402124-d610-4e3e-8d87-eb4a30883099'); //default profile picture
       await user.reload();
       user = auth.currentUser;
+      FirebaseFirestore.instance
+          .collection('UsersData')
+          .doc(user?.uid)
+          .set({
+        'profileurl': 'https://firebasestorage.googleapis.com/v0/b/chatup-6a40e.appspot.com/o/profile%20(1).png?alt=media&token=eb402124-d610-4e3e-8d87-eb4a30883099',
+      });
       firestore.collection(
           'users').doc(user?.uid).set({
         'email': email,
@@ -124,12 +130,20 @@ class FireAuth {
             print(errormessage);
           }
           break;
+        case "network-request-failed":
+          {
+            errormessage = 'Network Timeout! Check your internet connection';
+            print(errormessage);
+          }
+          break;
         default:
           {
             errormessage = "An undefined Error happened.";
             print(errormessage);
           }
       }
+      print("This is error"+e.toString());
+      print("\nThis is error code"+e.code);
     }
     return user;
   }

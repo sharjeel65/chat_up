@@ -18,7 +18,6 @@ class UserHome extends StatefulWidget {
 
 class _UserHomeState extends State<UserHome> {
   late User? _currentUser;
-
   @override
   void initState() {
     _currentUser = widget.user;
@@ -50,7 +49,7 @@ class _UserHomeState extends State<UserHome> {
               Color(0xFFfefefe),
               Color(0xFF6372a1),
             ],
-          )),
+          ),),
           height: double.infinity,
           width: double.infinity,
           child: SingleChildScrollView(
@@ -79,44 +78,16 @@ class _UserHomeState extends State<UserHome> {
                                           user: _currentUser!,
                                         )));
                               },
-                              child: Container(
-                                height: 50,
-                                width: 50,
-                                child: Image.network(
-                                  _currentUser!.photoURL!,
-                                  fit: BoxFit.contain,
-                                  loadingBuilder: (BuildContext context,
-                                      Widget child,
-                                      ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value:
-                                            loadingProgress.expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                : null,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.blueAccent,
-                                    width: 2,
-                                  ),
-                                  shape: BoxShape.circle,
-                                ),
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    _currentUser!.photoURL!),
+                                maxRadius: 20,
                               ),
                             ),
                           ),
                           Expanded(
                             flex: 5,
                             child: Container(
-                              color: Colors.white,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -242,13 +213,14 @@ class _UserHomeState extends State<UserHome> {
                       child: StreamBuilder<QuerySnapshot>(
                         stream: _mFirestore.collection('friends').doc(_currentUser!.uid).collection(_currentUser!.uid).snapshots(),
                         builder: (context, snapshots) {
+
                           if (snapshots.hasData) {
                             return ListView.builder(
                               itemCount: snapshots.data!.docs.length,
                               itemBuilder: (context, index) {
                                 QueryDocumentSnapshot<Object?>? doc =
                                 snapshots.data?.docs[index];
-                                return ChatCard(data: doc, index: index,);
+                                return ChatCard(data: doc,);
                               },
                             );
                           } else {

@@ -396,7 +396,6 @@ class _ChatroomSingleChatState extends State<ChatroomSingleChat> {
                                     duration: const Duration(milliseconds: 1000),
                                     curve: Curves.easeInOut);
                               }
-
                             },
                             child: Icon(
                               Icons.send,
@@ -406,7 +405,6 @@ class _ChatroomSingleChatState extends State<ChatroomSingleChat> {
                             backgroundColor: Colors.blue,
                             elevation: 0,
                           ),
-
                         ],
                       ),
                     ),

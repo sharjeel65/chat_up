@@ -23,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => SignupPage(verificat: false, userfromsignin: _user,)));
   }
-
   final _formKey = GlobalKey<FormState>();
 
   final _emailTextController = TextEditingController();
@@ -98,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        margin: EdgeInsets.fromLTRB(50, 100, 50, 50),
+                        margin: EdgeInsets.fromLTRB(50, 80, 50, 40),
                         height: 83,
                         width: 101,
                       ),

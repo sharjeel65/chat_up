@@ -185,7 +185,6 @@ class _UserSingleChatState extends State<UserSingleChat> {
                           snapshots.data?.docs[index];
                           return Container(
                             margin: EdgeInsets.all(10),
-
                             child: doc?.get('idFrom') == _user.uid
                                 ? Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -468,7 +467,6 @@ class _UserSingleChatState extends State<UserSingleChat> {
                               if(friendchatdbvalue2){
                                 InitializeFriend();
                               }
-
                             },
                             child: Icon(
                               Icons.send,
