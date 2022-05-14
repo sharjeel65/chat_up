@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:time_elapsed/time_elapsed.dart';
@@ -40,6 +41,7 @@ class _ChatCardState extends State<ChatCard> {
             builder: (context) => UserSingleChat(
               UID: doc!.get('To'),
               userID1: doc?.get('idTo'),
+              data: doc!,
             ),
           ),
         );
@@ -76,16 +78,50 @@ class _ChatCardState extends State<ChatCard> {
                 child: FutureBuilder(
                     future: FirebaseFirestore.instance
                         .collection('UsersData')
-                    .doc('cobB5lTkRZZmFIhqSEP2StHUEds1')
+                        .doc(doc?.get('idTo'))
                         .get(),
                     builder: (context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
+                        return Container(
+                            color: Colors.transparent,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                            )));
                       } else {
-                        return CircleAvatar(
-                          backgroundImage: NetworkImage(snapshot.data.get('profileurl').toString()),
-                          maxRadius: 20,
-                        );
+                        return StreamBuilder(
+                            stream: FirebaseDatabase.instance
+                                .ref()
+                                .child("presence/" + doc?.get('idTo'))
+                                .onValue,
+                            builder: (context, AsyncSnapshot snapshots) {
+                              if (snapshots.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Text('Fetching Data');
+                              } else if (snapshots.hasData) {
+                                var data = snapshots.data.snapshot.value;
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: data['connections'] == null
+                                            ? Colors.red
+                                            : Colors.green,
+                                        width: 1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(snapshot.data
+                                        .get('profileurl')
+                                        .toString()),
+                                    maxRadius: 20,
+                                    backgroundColor: Colors.grey,
+                                  ),
+                                );
+                                //return Text(snapshot.data.get('online') ? 'Online' : TimeElapsed.fromDateStr(DateTime.fromMillisecondsSinceEpoch(int.parse(snapshot.data.get('lastseen'))).toString())+' ago');
+                              } else {
+                                return Text('no data');
+                              }
+                            }); /*;*/
                       }
                     }),
               ),
@@ -137,6 +173,9 @@ class _ChatCardState extends State<ChatCard> {
                                             ? doc1?.get('content')
                                             : 'no messages',
                                         overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400),
                                       ),
                                     ),
                                   ),

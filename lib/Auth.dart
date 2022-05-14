@@ -30,6 +30,7 @@ class FireAuth {
           .doc(user?.uid)
           .set({
         'profileurl': 'https://firebasestorage.googleapis.com/v0/b/chatup-6a40e.appspot.com/o/profile%20(1).png?alt=media&token=eb402124-d610-4e3e-8d87-eb4a30883099',
+        'online': null,'lastseen': null,
       });
       firestore.collection(
           'users').doc(user?.uid).set({

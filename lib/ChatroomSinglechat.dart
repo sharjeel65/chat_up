@@ -180,7 +180,7 @@ class _ChatroomSingleChatState extends State<ChatroomSingleChat> {
                                                             flex: 1,
                                                             fit: FlexFit.loose,
                                                             child: GestureDetector(
-                                                              onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserSingleChat(userID1: doc?.get('idFrom'), UID: doc?.get('name'),)));},
+                                                              onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserSingleChat(userID1: doc?.get('idFrom'), UID: doc?.get('name'), data: doc,)));},
                                                               child: Container(width:double.infinity,height: double.infinity,margin:EdgeInsets.fromLTRB(10, 15, 2, 1),color: Colors.white,child:  Text(
                                                                 'Message',
                                                                 style: TextStyle(

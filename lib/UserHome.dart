@@ -6,22 +6,24 @@ import 'package:flutter/material.dart';
 import 'ChatroomCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:move_to_background/move_to_background.dart';
+import 'User_presence.dart';
 class UserHome extends StatefulWidget {
   final User? user;
 
   const UserHome({required this.user});
-
   @override
   State<UserHome> createState() => _UserHomeState();
 }
+class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
 
-
-class _UserHomeState extends State<UserHome> {
   late User? _currentUser;
+
   @override
   void initState() {
     _currentUser = widget.user;
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    PresenceService().configureUserPresence(_currentUser!.uid);
   }
 
   @override
@@ -29,6 +31,21 @@ class _UserHomeState extends State<UserHome> {
   bool extended = false;
   bool extended1 = false;
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
+      PresenceService().disconnect();
+    }
+    if (state == AppLifecycleState.resumed) {
+      PresenceService().connect();
+    }
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop:   () async {

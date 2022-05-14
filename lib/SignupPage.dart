@@ -398,7 +398,7 @@ class _SignupPageState extends State<SignupPage> {
     // TODO: implement initState
     super.initState();
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       verificate = widget.verificat;
       if (verificate) {
         _user = widget.userfromsignin;
