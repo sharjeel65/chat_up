@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart'; //splash screen import
-import 'SplashAnimation.dart';
+import 'Screens/SplashAnimation.dart';
 import 'package:firebase_core/firebase_core.dart';
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();

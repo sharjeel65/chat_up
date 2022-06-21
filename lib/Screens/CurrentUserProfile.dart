@@ -1,17 +1,16 @@
 import 'dart:io';
-
+import 'package:chat_up/Screens/LoginPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import '../Services/Auth.dart';
+import '../Services/User_presence.dart';
 class CurrentUserProfile extends StatefulWidget {
   late final User user;
-
   CurrentUserProfile({Key? key, required this.user}) : super(key: key);
-
   @override
   State<CurrentUserProfile> createState() => _CurrentUserProfileState();
 }
@@ -23,7 +22,6 @@ class _CurrentUserProfileState extends State<CurrentUserProfile> {
     super.initState();
     _currentUser = widget.user;
   }
-
   @override
   late User _currentUser;
   final ImagePicker _picker = ImagePicker();
@@ -310,7 +308,41 @@ class _CurrentUserProfileState extends State<CurrentUserProfile> {
                         )
                       ],
                     ),
-                  )
+                  ),
+                  GestureDetector(
+                    onTap: () async{
+                       PresenceService().disconnect();
+                      await DeAuth.signOut();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                          LoginPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 130,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                        border: Border.all(color: Colors.grey),
+                        color: Colors.blue.shade50,
+                        boxShadow: [
+                           BoxShadow(
+                             blurRadius: 4,
+                             color: Colors.grey,
+                             offset: Offset(3,6),
+                           )
+                         ],
+                      ),
+                      child: Center(child: Text('Sign Out',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 18,
+                      ),),),
+                    ),
+                  ),
                 ],
               ),
             ),

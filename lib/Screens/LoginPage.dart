@@ -1,15 +1,17 @@
-import 'package:chat_up/UserHome.dart';
+import 'package:chat_up/Screens/UserHome.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:chat_up/SignupPage.dart';
+import 'package:chat_up/Screens/SignupPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:move_to_background/move_to_background.dart';
-import 'Auth.dart';
-import 'Validator.dart';
+import '../Services/Auth.dart';
+import '../Services/Validator.dart';
+import '../Services/googleAuth.dart';
 import 'SignupPage.dart';
+import '../Services/fbAuth.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -31,9 +33,10 @@ class _LoginPageState extends State<LoginPage> {
   final _focusPassword = FocusNode();
   bool _isProcessing = false;
   late DocumentSnapshot snapshot;
-  User? _user = FirebaseAuth.instance.currentUser;
+  final User? _user = FirebaseAuth.instance.currentUser;
 
   Future<bool> userVerification() async {
+    //print('this is user id'+_user!.uid);
     final data = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -297,8 +300,48 @@ class _LoginPageState extends State<LoginPage> {
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                _navigatetosignup(context);
+                              onTap: () async{
+                                User? user = await GoogleAuth.signInWithGoogle();
+                                await GoogleFireStoreInit.Init();
+                                if(GoogleAutherrors.Error()=='account-exists-with-different-credential'){
+                                  showDialog(context: context, builder: (ctx)=> AlertDialog(
+                                    title: Text("Email Already Exists"),
+                                    content: Text("Please use another account or link this with your existing account. \n Thanks"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: Text("Ok"),
+                                      ),
+                                    ],
+                                  ));
+                                }
+                                else{
+                                  print('this is id'+user!.uid);
+                                  if (user != null) {
+                                    if (await userVerification()) {
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              UserHome(user: user),
+                                        ),
+                                      );
+                                    } else{
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignupPage(verificat: true, userfromsignin: user,)));
+                                    }
+                                  } else if (user == null) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Container(
+                                            child: Text(errormessage),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }}
                               },
                               child: Container(
                                 height: 26,
@@ -330,8 +373,48 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                _navigatetosignup(context);
+                              onTap: () async {
+                                User? user = await FbAuth.signInWithFacebook();
+                                 await FBFireStoreInit.Init();
+                                if(FbAutherrors.Error()=='account-exists-with-different-credential'){
+                                  showDialog(context: context, builder: (ctx)=> AlertDialog(
+                                    title: Text("Email Already Exists"),
+                                    content: Text("Please use another account or link this with your existing account. \n Thanks"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: Text("Ok"),
+                                      ),
+                                    ],
+                                  ));
+                                }
+                                else{
+                                print('this is id'+user!.uid);
+                                if (user != null) {
+                                  if (await userVerification()) {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserHome(user: user),
+                                      ),
+                                    );
+                                  } else{
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignupPage(verificat: true, userfromsignin: user,)));
+                                  }
+                                } else if (user == null) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Container(
+                                          child: Text(errormessage),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }}
                               },
                               child: Container(
                                 height: 26,

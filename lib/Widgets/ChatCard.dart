@@ -1,9 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:time_elapsed/time_elapsed.dart';
-import 'UserSingleChat.dart';
+import '../Screens/UserSingleChat.dart';
 
 class ChatCard extends StatefulWidget {
   QueryDocumentSnapshot<Object?>? data;
@@ -110,7 +111,7 @@ class _ChatCardState extends State<ChatCard> {
                                     shape: BoxShape.circle,
                                   ),
                                   child: CircleAvatar(
-                                    backgroundImage: NetworkImage(snapshot.data
+                                    backgroundImage: CachedNetworkImageProvider(snapshot.data
                                         .get('profileurl')
                                         .toString()),
                                     maxRadius: 20,

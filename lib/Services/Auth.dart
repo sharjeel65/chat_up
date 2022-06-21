@@ -158,6 +158,12 @@ class FireAuth {
     return refreshedUser;
   }
 }
+class DeAuth{
+ static Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+}
+
 class errors {
   String error() {
     return errormessage;

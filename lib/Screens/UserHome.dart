@@ -1,12 +1,12 @@
-import 'package:chat_up/ChatCard.dart';
-import 'package:chat_up/CurrentUserProfile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_up/Widgets/ChatCard.dart';
+import 'package:chat_up/Screens/CurrentUserProfile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'ChatroomCard.dart';
+import '../Widgets/ChatroomCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:move_to_background/move_to_background.dart';
-import 'User_presence.dart';
+import '../Services/User_presence.dart';
 class UserHome extends StatefulWidget {
   final User? user;
 
@@ -26,10 +26,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
     PresenceService().configureUserPresence(_currentUser!.uid);
   }
 
-  @override
   final _mFirestore = FirebaseFirestore.instance;
-  bool extended = false;
-  bool extended1 = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -46,6 +43,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop:   () async {
@@ -54,7 +52,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
       },
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
             stops: [
               0.50,
@@ -96,7 +94,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                                         )));
                               },
                               child: CircleAvatar(
-                                backgroundImage: NetworkImage(
+                                backgroundImage: CachedNetworkImageProvider(
                                     _currentUser!.photoURL!),
                                 maxRadius: 20,
                               ),
@@ -104,26 +102,24 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                           ),
                           Expanded(
                             flex: 5,
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    _currentUser!.displayName! ,
-                                    style: TextStyle(
-                                      color: Colors.blueAccent,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _currentUser!.displayName! ,
+                                  style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  Text(
-                                    'Online',
-                                    style: TextStyle(
-                                      color: Colors.blueAccent,
-                                    ),
+                                ),
+                                Text(
+                                  'Online',
+                                  style: TextStyle(
+                                    color: Colors.blueAccent,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                           Expanded(
@@ -223,10 +219,10 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                       ),
                     ),
                     //4th row started
-                    !extended1
-                        ? Container(
+
+                         Container(
                             width: double.infinity,
-                            height: extended ? 500 : 250,
+                            height: 250,
                       child: StreamBuilder<QuerySnapshot>(
                         stream: _mFirestore.collection('friends').doc(_currentUser!.uid).collection(_currentUser!.uid).snapshots(),
                         builder: (context, snapshots) {
@@ -249,40 +245,8 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                           }
                         },
                       ),
-                          )
-                        : Container(
-                            width: double.infinity,
-                            height: 10,
-                            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           ),
                     //5th Row started
-                    GestureDetector(
-                      onTap: () {
-                        if (!extended) {
-                          setState(() {
-                            extended = true;
-                            extended1 = false;
-                          });
-                        } else {
-                          setState(() {
-                            extended = false;
-                          });
-                        }
-                      },
-                      child: Container(
-                        color: Colors.black12,
-                        width: double.infinity,
-                        height: 20,
-                        child: Center(
-                          child: Icon(
-                            !extended
-                                ? CupertinoIcons.arrow_down
-                                : CupertinoIcons.arrow_up,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
                     //6th row started
                     Container(
                       width: double.infinity,
@@ -293,7 +257,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                         children: [
                           GestureDetector(
                             onTap: (null),
-                            child: Text(
+                            child: const Text(
                               'Recents',
                               style: TextStyle(
                                 color: Colors.blueAccent,
@@ -303,7 +267,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                           ),
                           GestureDetector(
                             onTap: (null),
-                            child: Text(
+                            child: const Text(
                               'All',
                               style: TextStyle(
                                 color: Colors.blueAccent,
@@ -314,40 +278,11 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                         ],
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        if (!extended1) {
-                          setState(
-                            () {
-                              extended1 = true;
-                            },
-                          );
-                        } else {
-                          setState(
-                            () {
-                              extended1 = false;
-                            },
-                          );
-                        }
-                      },
-                      child: Container(
-                        color: Colors.black12,
-                        width: double.infinity,
-                        height: 20,
-                        child: Center(
-                          child: Icon(
-                            !extended1
-                                ? CupertinoIcons.arrow_up
-                                : CupertinoIcons.arrow_down,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
+
                     //7th row started
                     Container(
                       width: double.infinity,
-                      height: !extended1 ? 250 : 450,
+                      height:  250,
                       child: StreamBuilder<QuerySnapshot>(
                         stream: _mFirestore.collection('chatrooms').snapshots(),
                         builder: (context, snapshots) {
@@ -361,7 +296,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                               },
                             );
                           } else {
-                            return Center(
+                            return const Center(
                               child: Text(
                                 'Data not available',
                               ),
