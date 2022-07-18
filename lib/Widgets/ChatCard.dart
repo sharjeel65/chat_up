@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:time_elapsed/time_elapsed.dart';
+
 import '../Screens/UserSingleChat.dart';
 
 class ChatCard extends StatefulWidget {
@@ -85,10 +86,16 @@ class _ChatCardState extends State<ChatCard> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Container(
                             color: Colors.transparent,
-                            child: Center(
-                                child: CircularProgressIndicator(
-                              strokeWidth: 3,
-                            )));
+                            child: Container(
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('assets/images/pic.png'),
+                                  radius: 100,
+                                ),
+                              ),
+                            ));
                       } else {
                         return StreamBuilder(
                             stream: FirebaseDatabase.instance
@@ -98,7 +105,15 @@ class _ChatCardState extends State<ChatCard> {
                             builder: (context, AsyncSnapshot snapshots) {
                               if (snapshots.connectionState ==
                                   ConnectionState.waiting) {
-                                return Text('Fetching Data');
+                                return Container(
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          AssetImage('assets/images/pic.png'),
+                                    ),
+                                  ),
+                                );
                               } else if (snapshots.hasData) {
                                 var data = snapshots.data.snapshot.value;
                                 return Container(
@@ -110,12 +125,17 @@ class _ChatCardState extends State<ChatCard> {
                                         width: 1),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(snapshot.data
-                                        .get('profileurl')
-                                        .toString()),
-                                    maxRadius: 20,
-                                    backgroundColor: Colors.grey,
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(snapshot
+                                              .data
+                                              .get('profileurl')
+                                              .toString()),
+                                      maxRadius: 30,
+                                      backgroundColor: Colors.grey,
+                                    ),
                                   ),
                                 );
                                 //return Text(snapshot.data.get('online') ? 'Online' : TimeElapsed.fromDateStr(DateTime.fromMillisecondsSinceEpoch(int.parse(snapshot.data.get('lastseen'))).toString())+' ago');
@@ -169,15 +189,23 @@ class _ChatCardState extends State<ChatCard> {
                                   Expanded(
                                     flex: 5,
                                     child: Container(
-                                      child: Text(
-                                        doc1?.get('content') != null
-                                            ? doc1?.get('content')
-                                            : 'no messages',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w400),
-                                      ),
+                                      child: doc1?.get('type') == 'Text'
+                                          ? Text(
+                                              doc1?.get('content') != null
+                                                  ? doc1?.get('content')
+                                                  : 'no messages',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w400),
+                                            )
+                                          : Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 20,
+                                              ),
+                                            ),
                                     ),
                                   ),
                                   Expanded(

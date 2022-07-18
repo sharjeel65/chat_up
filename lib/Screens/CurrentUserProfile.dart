@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:chat_up/Screens/LoginPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,11 +7,15 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../Services/Auth.dart';
 import '../Services/User_presence.dart';
+
 class CurrentUserProfile extends StatefulWidget {
   late final User user;
+
   CurrentUserProfile({Key? key, required this.user}) : super(key: key);
+
   @override
   State<CurrentUserProfile> createState() => _CurrentUserProfileState();
 }
@@ -22,6 +27,7 @@ class _CurrentUserProfileState extends State<CurrentUserProfile> {
     super.initState();
     _currentUser = widget.user;
   }
+
   @override
   late User _currentUser;
   final ImagePicker _picker = ImagePicker();
@@ -131,24 +137,24 @@ class _CurrentUserProfileState extends State<CurrentUserProfile> {
                           print('this is url' + url);
                           await _currentUser.updatePhotoURL(url).then(
                                 (_) => {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text("Completed"),
-                                  content: Text(
-                                      "Your Profile has been successfully updated"),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(ctx).pop();
-                                      },
-                                      child: Text("Ok"),
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text("Completed"),
+                                      content: Text(
+                                          "Your Profile has been successfully updated"),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: Text("Ok"),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            },
-                          );
+                                  ),
+                                },
+                              );
                           print("This is updated url" + _currentUser.photoURL!);
                           FirebaseFirestore.instance
                               .collection('UsersData')
@@ -231,8 +237,7 @@ class _CurrentUserProfileState extends State<CurrentUserProfile> {
                         height: 150,
                         width: 150,
                         child: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(_currentUser.photoURL!),
+                          backgroundImage: NetworkImage(_currentUser.photoURL!),
                           maxRadius: 20,
                         ),
                         decoration: BoxDecoration(
@@ -280,18 +285,201 @@ class _CurrentUserProfileState extends State<CurrentUserProfile> {
                   Container(
                     width: double.infinity,
                     height: 50,
-                    margin: EdgeInsets.fromLTRB(30, 10, 30, 0),
+                    margin: EdgeInsets.fromLTRB(30, 15, 30, 0),
                     decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.blue, width: 1)),
+                      gradient: LinearGradient(
+                        stops: [
+                          0.10,
+                          1.0,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.blue.shade200,
+                          Colors.blueGrey,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           '   Password',
                           style: TextStyle(
-                            color: Colors.blue.shade700,
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            print('tapped');
+                          },
+                          icon: Icon(
+                            CupertinoIcons.pen,
+                            size: 30,
+                            color: Colors.blue,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    margin: EdgeInsets.fromLTRB(30, 15, 30, 0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        stops: [
+                          0.10,
+                          1.0,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.blue.shade200,
+                          Colors.blueGrey,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '   Password',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            print('tapped');
+                          },
+                          icon: Icon(
+                            CupertinoIcons.pen,
+                            size: 30,
+                            color: Colors.blue,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    margin: EdgeInsets.fromLTRB(30, 15, 30, 0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        stops: [
+                          0.10,
+                          1.0,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.blue.shade200,
+                          Colors.blueGrey,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '   Password',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            print('tapped');
+                          },
+                          icon: Icon(
+                            CupertinoIcons.pen,
+                            size: 30,
+                            color: Colors.blue,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    margin: EdgeInsets.fromLTRB(30, 15, 30, 0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        stops: [
+                          0.10,
+                          1.0,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.blue.shade200,
+                          Colors.blueGrey,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '   Password',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            print('tapped');
+                          },
+                          icon: Icon(
+                            CupertinoIcons.pen,
+                            size: 30,
+                            color: Colors.blue,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    margin: EdgeInsets.fromLTRB(30, 15, 30, 0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        stops: [
+                          0.10,
+                          1.0,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.blue.shade200,
+                          Colors.blueGrey,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '   Password',
+                          style: TextStyle(
+                            color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
                           ),
@@ -310,37 +498,50 @@ class _CurrentUserProfileState extends State<CurrentUserProfile> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () async{
-                       PresenceService().disconnect();
+                    onTap: () async {
+                      PresenceService().disconnect();
                       await DeAuth.signOut();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) =>
-                          LoginPage(),
+                          builder: (context) => LoginPage(),
                         ),
                       );
                     },
                     child: Container(
                       height: 40,
                       width: 130,
+                      margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
                       decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          stops: [0.1, 1.5],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.red.shade200,
+                            Colors.purple,
+                          ],
+                        ),
                         borderRadius: BorderRadius.all(Radius.circular(6)),
                         border: Border.all(color: Colors.grey),
                         color: Colors.blue.shade50,
                         boxShadow: [
-                           BoxShadow(
-                             blurRadius: 4,
-                             color: Colors.grey,
-                             offset: Offset(3,6),
-                           )
-                         ],
+                          BoxShadow(
+                            blurRadius: 4,
+                            color: Colors.grey,
+                            offset: Offset(3, 6),
+                          )
+                        ],
                       ),
-                      child: Center(child: Text('Sign Out',
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 18,
-                      ),),),
+                      child: Center(
+                        child: Text(
+                          'Sign Out',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chat_up/Screens/image_view.dart';
+import 'package:chat_up/Services/image_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:time_elapsed/time_elapsed.dart';
-
 import '../Services/Validator.dart';
 
 class UserSingleChat extends StatefulWidget {
@@ -110,7 +108,7 @@ class _UserSingleChatState extends State<UserSingleChat> {
   bool imageBool = false;
   final ImagePicker _picker = ImagePicker();
   late String URL;
-
+  dynamic imagePath;
   void displayBottomSheet(BuildContext context) async {
     showModalBottomSheet(
         context: context,
@@ -131,21 +129,13 @@ class _UserSingleChatState extends State<UserSingleChat> {
                         XFile? image = await _picker.pickImage(
                             source: ImageSource.gallery, imageQuality: 40);
                         dynamic myFile = File(image!.path);
-                        FirebaseStorage storage = FirebaseStorage.instance;
-                        Reference ref =
-                            storage.ref().child('users/chats/${ChatName()}');
-                        UploadTask uploadTask = ref.putFile(myFile);
-                        uploadTask.then((res) async {
-                          String url = await res.ref.getDownloadURL();
-                          if (kDebugMode) {
-                            print('this is url$url');
-                          }
-                          URL = url;
-                          imageBool = true;
-                          setState(() {
-                            imageuploadloading = false;
-                          });
+                        imagePath = myFile;
+                        print("this is imagepath" + imagePath.toString());
+                        imageBool = true;
+                        setState(() {
+                          imageuploadloading = false;
                         });
+                        Navigator.pop(context);
                       },
                       child: Container(
                         width: 60,
@@ -189,21 +179,12 @@ class _UserSingleChatState extends State<UserSingleChat> {
                         XFile? image = await _picker.pickImage(
                             source: ImageSource.camera, imageQuality: 40);
                         dynamic myFile = File(image!.path);
-                        FirebaseStorage storage = FirebaseStorage.instance;
-                        Reference ref =
-                            storage.ref().child('users/chats/${ChatName()}');
-                        UploadTask uploadTask = ref.putFile(myFile);
-                        uploadTask.then((res) async {
-                          String url = await res.ref.getDownloadURL();
-                          if (kDebugMode) {
-                            print('this is url$url');
-                          }
-                          URL = url;
-                          imageBool = true;
-                          setState(() {
-                            imageuploadloading = false;
-                          });
+                        imagePath = myFile;
+                        imageBool = true;
+                        setState(() {
+                          imageuploadloading = false;
                         });
+                        Navigator.pop(context);
                       },
                       child: Container(
                         width: 60,
@@ -383,7 +364,7 @@ class _UserSingleChatState extends State<UserSingleChat> {
                                       children: [
                                         Container(
                                           constraints: BoxConstraints(
-                                            maxWidth: 380,
+                                            maxWidth: 370,
                                             maxHeight: 800,
                                             minHeight: 40,
                                             minWidth: 50,
@@ -668,7 +649,7 @@ class _UserSingleChatState extends State<UserSingleChat> {
                                       child: doc?.get('type') == 'Text'
                                           ? Container(
                                               constraints: BoxConstraints(
-                                                maxWidth: 380,
+                                                maxWidth: 370,
                                                 maxHeight: 800,
                                                 minHeight: 40,
                                                 minWidth: 50,
@@ -789,18 +770,39 @@ class _UserSingleChatState extends State<UserSingleChat> {
                                     ),
                                   )
                                 : Container(
-                                    height: 20,
+                                    height: 35,
                                     width: 70,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Colors.black26,
-                                    ),
-                                    child: Text(
-                                      'Send Image',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                      ),
+                                        borderRadius: BorderRadius.circular(3),
+                                        border:
+                                            Border.all(color: Colors.black26)),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Send Image',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        Icon(
+                                          Icons.image,
+                                          size: 30,
+                                        ),
+                                        IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                imageBool = false;
+                                                imagePath = null;
+                                              });
+                                            },
+                                            icon: Icon(
+                                              Icons.cancel,
+                                              color: Colors.red,
+                                            )),
+                                      ],
                                     ),
                                   ),
                           ),
@@ -836,25 +838,38 @@ class _UserSingleChatState extends State<UserSingleChat> {
                                       curve: Curves.easeInOut);
                                 }
                               } else {
-                                FirebaseFirestore.instance
-                                    .collection('chats')
-                                    .doc(ChatName())
-                                    .collection(ChatName())
-                                    .doc(DateTime.now()
-                                        .millisecondsSinceEpoch
-                                        .toString())
-                                    .set(
-                                  {
-                                    'idFrom': _user.uid,
-                                    'idTo': userid1,
-                                    'timestamp': DateTime.now()
-                                        .millisecondsSinceEpoch
-                                        .toString(),
-                                    'content': URL,
-                                    'type': 'Image',
-                                    'name': _user.displayName,
-                                  },
-                                );
+                                FirebaseStorage storage =
+                                    FirebaseStorage.instance;
+                                Reference ref = storage.ref().child(
+                                    'users/chats/${ChatName()}/${DateTime.now().millisecondsSinceEpoch}');
+                                UploadTask uploadTask = ref.putFile(imagePath);
+                                uploadTask.then((res) async {
+                                  String url = await res.ref.getDownloadURL();
+                                  if (kDebugMode) {
+                                    print('this is url$url');
+                                  }
+                                  URL = url;
+                                }).then((_) => {
+                                      FirebaseFirestore.instance
+                                          .collection('chats')
+                                          .doc(ChatName())
+                                          .collection(ChatName())
+                                          .doc(DateTime.now()
+                                              .millisecondsSinceEpoch
+                                              .toString())
+                                          .set(
+                                        {
+                                          'idFrom': _user.uid,
+                                          'idTo': userid1,
+                                          'timestamp': DateTime.now()
+                                              .millisecondsSinceEpoch
+                                              .toString(),
+                                          'content': URL,
+                                          'type': 'Image',
+                                          'name': _user.displayName,
+                                        },
+                                      )
+                                    });
                               }
                               if (friendchatdbvalue) {
                                 getFriends();

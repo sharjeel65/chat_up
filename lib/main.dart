@@ -1,11 +1,16 @@
+import 'package:camera/camera.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart'; //splash screen import
+
 import 'Screens/SplashAnimation.dart';
-import 'package:firebase_core/firebase_core.dart';
-void main() {
+
+List<CameraDescription>? cameras;
+
+Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
+  //cameras = await availableCameras();
   runApp(const App());
 }
 
@@ -36,6 +41,7 @@ class _AppState extends State<App> {
 
     FlutterNativeSplash.remove();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

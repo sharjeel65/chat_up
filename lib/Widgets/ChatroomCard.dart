@@ -115,14 +115,22 @@ class _ChatroomCardState extends State<ChatroomCard> {
                                   Expanded(
                                     flex: 5,
                                     child: Container(
-                                      child: Text(
-                                        doc1?.get('content') != null
-                                            ? doc1?.get('name') +
-                                                ': ' +
-                                                doc1?.get('content')
-                                            : 'no messages',
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      child: doc1?.get('type') == 'Text'
+                                          ? Text(
+                                              doc1?.get('content') != null
+                                                  ? doc1?.get('name') +
+                                                      ': ' +
+                                                      doc1?.get('content')
+                                                  : 'no messages',
+                                              overflow: TextOverflow.ellipsis,
+                                            )
+                                          : Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 20,
+                                              ),
+                                            ),
                                     ),
                                   ),
                                   Expanded(
