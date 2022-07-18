@@ -7,8 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:move_to_background/move_to_background.dart';
-import 'package:tflite/tflite.dart';
-
 import '../Services/User_presence.dart';
 import '../Widgets/ChatroomCard.dart';
 
@@ -28,6 +26,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
 
   String? output = '';
   dynamic myFile;
+  /*
   void function() async {
     cameraImage = await cameraController!.takePicture();
     myFile = cameraImage!.path;
@@ -46,7 +45,6 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
       }
     });
   }
-
   runModel() async {
     if (cameraImage != null) {
       print('started prediction');
@@ -73,7 +71,7 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
         labels: "assets/labels.txt",
         isAsset: true);
   }
-
+*/
   @override
   void initState() {
     _currentUser = widget.user;
