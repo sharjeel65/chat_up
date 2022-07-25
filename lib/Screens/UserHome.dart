@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:chat_up/Screens/CurrentUserProfile.dart';
 import 'package:chat_up/Widgets/ChatCard.dart';
-import 'package:chat_up/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ import '../Widgets/ChatroomCard.dart';
 class UserHome extends StatefulWidget {
   final User? user;
 
-  const UserHome({required this.user});
+  const UserHome({Key? key, required this.user}) : super(key: key);
 
   @override
   State<UserHome> createState() => _UserHomeState();
@@ -21,57 +20,69 @@ class UserHome extends StatefulWidget {
 
 class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
   late User? _currentUser;
+  late List<String> labels;
   XFile? cameraImage;
   CameraController? cameraController;
+  // late Interpreter interpreter;
+  // String? output = '';
+  // TensorBuffer probabilityBuffer =
+  // TensorBuffer.createFixedSize(<int>[1, 1001], TfLiteType.uint8);
+  // SequentialProcessor<TensorBuffer> probabilityProcessor =
+  // TensorProcessorBuilder().add(DequantizeOp(0, 1 / 255.0)).build();
+  // dynamic myFile;
+  //   void function() async {
+  //   cameraImage = await cameraController!.takePicture();
+  //   myFile = cameraImage!.path;
+  //   // runModel();
+  // }
 
-  String? output = '';
-  dynamic myFile;
-  /*
-  void function() async {
-    cameraImage = await cameraController!.takePicture();
-    myFile = cameraImage!.path;
-    runModel();
-  }
+  // loadCamera() {
+  //   cameraController = CameraController(cameras![1], ResolutionPreset.high,
+  //       imageFormatGroup: ImageFormatGroup.jpeg);
+  //   cameraController?.initialize().then((value) {
+  //     if (!mounted) {
+  //       print('not mounted');
+  //       return;
+  //     } else {
+  //       function();
+  //     }
+  //   });
+  // }
+//   runModel() async {
+//     ImageProcessor imageProcessor = ImageProcessorBuilder()
+//         .add(ResizeOp(224, 224, ResizeMethod.NEAREST_NEIGHBOUR))
+//         .build();
+//
+// // Create a TensorImage object from a File
+//     TensorImage tensorImage = TensorImage.fromFile(myFile);
+//     tensorImage = imageProcessor.process(tensorImage);
+//     interpreter.run(tensorImage.buffer, probabilityBuffer.buffer);
+//     TensorLabel tensorLabel = TensorLabel.fromList(
+//         labels, probabilityProcessor.process(probabilityBuffer));
+//
+//     Map<String, double> doubleMap = tensorLabel.getMapWithFloatValue();
+//   }
 
-  loadCamera() {
-    cameraController = CameraController(cameras![1], ResolutionPreset.high,
-        imageFormatGroup: ImageFormatGroup.jpeg);
-    cameraController?.initialize().then((value) {
-      if (!mounted) {
-        print('not mounted');
-        return;
-      } else {
-        function();
-      }
-    });
-  }
-  runModel() async {
-    if (cameraImage != null) {
-      print('started prediction');
-      print(myFile);
-      var prediction = await Tflite.runModelOnImage(
-          path: myFile.toString(), // required
-          imageMean: 127.5, // defaults to 117.0
-          imageStd: 127.5, // defaults to 1.0
-          numResults: 2, // defaults to 5
-          threshold: 0.1, // defaults to 0.1
-          asynch: true);
-      for (var element in prediction!) {
-        setState(() {
-          output = element['label'];
-          print("this is output$output");
-        });
-      }
-    }
-  }
 
-  loadModel() async {
-    await Tflite.loadModel(
-        model: "assets/model_unquant.tflite",
-        labels: "assets/labels.txt",
-        isAsset: true);
-  }
-*/
+// Initialization code
+// Create an ImageProcessor with all ops required. For more ops, please
+// refer to the ImageProcessor Ops section in this README.
+//   ImageProcessor imageProcessor = ImageProcessorBuilder()
+//       .add(ResizeOp(224, 224, ResizeMethod.NEAREST_NEIGHBOUR))
+//       .build();
+// Preprocess the image.
+// The image for imageFile will be resized to (224, 224)
+//   loadModel() async {
+//     labels = await FileUtil.loadLabels("assets/labels.txt");
+//     try {
+//       // Create interpreter from asset.
+//        interpreter =
+//       await Interpreter.fromAsset("/assets/model_unquant.tflite");
+//     } catch (e) {
+//       print('Error loading model: ' + e.toString());
+//     }
+//   }
+
   @override
   void initState() {
     _currentUser = widget.user;
@@ -380,36 +391,36 @@ class _UserHomeState extends State<UserHome> with WidgetsBindingObserver {
                           },
                         ),
                       ),
-                      /* Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              loadCamera();
-                              loadModel();
-                            },
-                            child: Container(
-                              width: 100,
-                              height: 200,
-                              color: Colors.red,
-                              child: !cameraController!.value.isInitialized
-                                  ? Container()
-                                  : AspectRatio(
-                                      aspectRatio:
-                                          cameraController!.value.aspectRatio,
-                                      child: CameraPreview(cameraController!),
-                                    ),
-                            ),
-                          ),
-                          Text(
-                            'this is output${output!}',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )
-                        ],
-                      )*/
+                      //  Column(
+                      //   children: [
+                      //     GestureDetector(
+                      //       onTap: () {
+                      //         loadCamera();
+                      //         loadModel();
+                      //       },
+                      //       child: Container(
+                      //         width: 100,
+                      //         height: 200,
+                      //         color: Colors.red,
+                      //         child: !cameraController!.value.isInitialized
+                      //             ? Container()
+                      //             : AspectRatio(
+                      //                 aspectRatio:
+                      //                     cameraController!.value.aspectRatio,
+                      //                 child: CameraPreview(cameraController!),
+                      //               ),
+                      //       ),
+                      //     ),
+                      //     // Text(
+                      //     //   'this is output${output!}',
+                      //     //   style: TextStyle(
+                      //     //     fontSize: 20,
+                      //     //     color: Colors.red,
+                      //     //     fontWeight: FontWeight.w600,
+                      //     //   ),
+                      //     // )
+                      //   ],
+                      // )
                     ],
                   ),
                 ),
