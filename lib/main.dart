@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart'; //splash screen import
 
 import 'Screens/SplashAnimation.dart';
+import 'firebase_options.dart';
 
 List<CameraDescription>? cameras;
 
@@ -36,7 +37,9 @@ class _AppState extends State<App> {
 
     await Future.delayed(const Duration(seconds: 1));
     print('ready....');
-    await Firebase.initializeApp().whenComplete(() {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    ).whenComplete(() {
       print("completed");
     });
 
