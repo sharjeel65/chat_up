@@ -41,6 +41,9 @@ class _LoginPageState extends State<LoginPage> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .get();
+    if (!data.exists) {
+      return false;
+    }
     snapshot = data as DocumentSnapshot<Object?>;
     var map = snapshot.data() as Map;
     var verification = map['verification'];
